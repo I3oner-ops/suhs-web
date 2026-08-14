@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SUHS — An Alternative Namespace</title>
+
+    <meta
+        name="description"
+        content="SUHS is an independent namespace and gateway system designed to provide an alternative way to discover and access websites."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #080b10;
+            color: #ffffff;
+        }
+
+        header {
+            padding: 24px 7%;
+            border-bottom: 1px solid #222831;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        .hero {
+            max-width: 1100px;
+            margin: auto;
+            padding: 120px 7% 100px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 92px);
+            line-height: 0.95;
+            margin: 0 0 30px;
+        }
+
+        .hero p {
+            max-width: 700px;
+            font-size: 21px;
+            line-height: 1.6;
+            color: #b8c0cc;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 15px 24px;
+            background: #ffffff;
+            color: #080b10;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+        }
+
+        section {
+            max-width: 1100px;
+            margin: auto;
+            padding: 80px 7%;
+        }
+
+        h2 {
+            font-size: 38px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            padding: 28px;
+            border: 1px solid #222831;
+            border-radius: 12px;
+            background: #0d1118;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #aeb7c4;
+            line-height: 1.6;
+        }
+
+        footer {
+            padding: 50px 7%;
+            border-top: 1px solid #222831;
+            color: #78818f;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">SUHS</div>
+
+    <nav>
+        <a href="#about">About</a>
+        <a href="#registry">Registry</a>
+        <a href="#gateway">Gateway</a>
+        <a href="#register">Register</a>
+    </nav>
+</header>
+
+<main>
+
+<section class="hero">
+
+    <h1>
+        A namespace<br>
+        outside the<br>
+        traditional web.
+    </h1>
+
+    <p>
+        SUHS is an independent namespace and gateway
+        system designed to give people another way to
+        discover, publish, and manage Internet resources.
+    </p>
+
+    <a class="button" href="#register">
+        Register a SUHS domain
+    </a>
+
+</section>
+
+<section id="about">
+
+    <h2>What is SUHS?</h2>
+
+    <p>
+        SUHS provides an alternative namespace for websites
+        and services. The SUHS Gateway allows participating
+        devices to resolve SUHS addresses without requiring
+        users to manually configure their network.
+    </p>
+
+</section>
+
+<section id="registry">
+
+    <h2>The Registry</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>.suhs</h3>
+            <p>
+                Public-facing websites, applications,
+                products, and services.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>.root</h3>
+            <p>
+                Administrative environments associated
+                with SUHS sites.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Independent Registry</h3>
+            <p>
+                SUHS maintains its own namespace registry
+                and domain relationships.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="gateway">
+
+    <h2>SUHS Gateway</h2>
+
+    <p>
+        Install the SUHS Gateway to allow compatible devices
+        to resolve SUHS addresses automatically.
+    </p>
+
+</section>
+
+<section id="register">
+
+    <h2>Register your SUHS domain</h2>
+
+    <p>
+        Choose a namespace for your website or project.
+        Registrations initially enter a reserved state and
+        require verification before activation.
+    </p>
+
+    <form id="registrationForm">
+
+        <input
+            id="domain"
+            type="text"
+            placeholder="yourname"
+            required
+        >
+
+        <br><br>
+
+        <input
+            id="email"
+            type="email"
+            placeholder="your email"
+            required
+        >
+
+        <br><br>
+
+        <button class="button" type="submit">
+            Register
+        </button>
+
+    </form>
+
+    <pre id="result"></pre>
+
+</section>
+
+</main>
+
+<footer>
+    SUHS — Independent Namespace Infrastructure
+</footer>
+
+<script>
+
+const REGISTRY_API =
+    "https://suhs-registry.michaelaroot1987.workers.dev/";
+
+document
+    .getElementById("registrationForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const domain =
+            document.getElementById("domain").value;
+
+        const email =
+            document.getElementById("email").value;
+
+        const result =
+            document.getElementById("result");
+
+        result.textContent =
+            "Submitting registration...";
+
+        try {
+
+            const response =
+                await fetch(
+                    REGISTRY_API + "/register",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name: domain,
+                            email: email
+                        })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            result.textContent =
+                JSON.stringify(data, null, 2);
+
+        } catch (error) {
+
+            result.textContent =
+                "Registration service unavailable.";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
