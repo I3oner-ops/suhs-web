@@ -240,6 +240,15 @@
 
         <br><br>
 
+        <input
+            id="password"
+            type="password"
+            placeholder="your password"
+            required
+        >
+
+        <br><br>
+
         <button class="button" type="submit">
             Register
         </button>
@@ -273,6 +282,9 @@ document
         const email =
             document.getElementById("email").value;
 
+        const password =
+            document.getElementById("password").value;
+
         const result =
             document.getElementById("result");
 
@@ -294,7 +306,8 @@ document
 
                         body: JSON.stringify({
                             name: domain,
-                            email: email
+                            email: email,
+                            password: password
                         })
                     }
                 );
