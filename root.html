@@ -12,6 +12,7 @@
         header { padding: 12px 24px; background: #0d1118; border-bottom: 1px solid #222831; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
+        .user-badge { font-size: 13px; color: #4ade80; background: #161b22; padding: 6px 12px; border-radius: 6px; border: 1px solid #222831; display: none; }
 
         /* Buttons */
         .btn { padding: 8px 16px; background: #222831; color: #fff; border: 1px solid #323a45; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; }
@@ -22,7 +23,8 @@
         .btn-accent:hover { background: #2563eb; }
 
         /* Workspace Grid */
-        .workspace { display: flex; flex: 1; overflow: hidden; }
+        .workspace { display: flex; flex: 1; overflow: hidden; filter: blur(4px); pointer-events: none; transition: filter 0.3s ease; }
+        .workspace.authenticated { filter: none; pointer-events: all; }
 
         /* Left Toolbar */
         .toolbar { width: 260px; background: #0d1118; border-right: 1px solid #222831; padding: 16px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
@@ -31,7 +33,8 @@
         .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
         /* Controls & Form Inputs */
-        input[type="text"], input[type="color"], select { width: 100%; padding: 8px; background: #161b22; border: 1px solid #222831; border-radius: 4px; color: #fff; font-size: 12px; }
+        input[type="text"], input[type="email"], input[type="password"], input[type="color"], select { width: 100%; padding: 10px; background: #161b22; border: 1px solid #222831; border-radius: 6px; color: #fff; font-size: 13px; }
+        input:focus { outline: none; border-color: #3b82f6; }
         .file-upload-btn { display: block; text-align: center; padding: 10px; background: #161b22; border: 1px dashed #323a45; border-radius: 6px; cursor: pointer; font-size: 12px; color: #aeb7c4; }
 
         /* Canvas Area */
@@ -57,11 +60,12 @@
         /* HTML Code View Editor */
         .code-editor { position: absolute; top: 41px; left: 0; right: 0; bottom: 0; width: 100%; height: calc(100% - 41px); background: #0d1118; color: #4ade80; font-family: monospace; font-size: 14px; padding: 20px; border: none; outline: none; resize: none; display: none; z-index: 10; }
 
-        /* Modal Overlay */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal { background: #0d1118; border: 1px solid #222831; border-radius: 12px; padding: 32px; width: 420px; text-align: center; }
+        /* Modal Overlays */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background: #0d1118; border: 1px solid #222831; border-radius: 12px; padding: 32px; width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         .modal h3 { margin-top: 0; font-size: 22px; }
         .modal p { color: #aeb7c4; font-size: 14px; line-height: 1.5; }
+        .auth-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
     </style>
 </head>
 <body>
@@ -69,12 +73,34 @@
 <header>
     <div class="logo">SUHS <span style="font-size: 12px; color: #3b82f6; font-weight: 400;">.root editor</span></div>
     <div class="header-actions">
+        <div class="user-badge" id="userBadge">Domain: <strong id="activeDomainDisplay">--</strong></div>
         <button class="btn" id="toggleModeBtn" onclick="toggleViewMode()">HTML Code Mode</button>
         <button class="btn btn-accent" onclick="saveAndPublish()">Publish to SUHS</button>
+        <button class="btn" id="logoutBtn" style="display: none;" onclick="logout()">Log Out</button>
     </div>
 </header>
 
-<div class="workspace">
+<!-- Authentication Modal -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal">
+        <h3>.root Access Portal</h3>
+        <p>Log in with your registered owner email and admin password to edit your .suhs site environment.</p>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" style="text-align: left; margin-top: 20px;">
+            <label style="font-size: 11px; text-transform: uppercase; color: #78818f; font-weight: 700;">Owner Email</label>
+            <input type="email" id="loginEmail" placeholder="your email" required style="margin-bottom: 16px; margin-top: 4px;">
+
+            <label style="font-size: 11px; text-transform: uppercase; color: #78818f; font-weight: 700;">Password</label>
+            <input type="password" id="loginPassword" placeholder="your password" required style="margin-bottom: 20px; margin-top: 4px;">
+
+            <button type="submit" class="btn btn-accent" id="loginSubmitBtn" style="width: 100%; padding: 12px;">Authenticate & Open Workspace</button>
+        </form>
+
+        <div class="auth-error" id="authError">Invalid email or password. Please try again.</div>
+    </div>
+</div>
+
+<div class="workspace" id="workspace">
     <!-- Left Inspector & Tool Palette -->
     <div class="toolbar" id="toolbar">
         <div class="tool-group">
@@ -141,12 +167,12 @@
 </div>
 
 <!-- Paywall Modal -->
-<div class="modal-overlay" id="paymentModal">
+<div class="modal-overlay" id="paymentModal" style="display: none;">
     <div class="modal">
         <h3>SUHS Pro Tier Required</h3>
         <p>The free registry tier includes up to 3 customizable sub-pages. Upgrade your namespace to add unlimited pages, custom domain routing, and enhanced media storage.</p>
         <button class="btn btn-accent" style="width: 100%; margin-top: 16px; padding: 12px;" onclick="resolvePayment()">Upgrade Namespace ($5/mo)</button>
-        <button class="btn" style="width: 100%; margin-top: 8px;" onclick="closeModal()">Close</button>
+        <button class="btn" style="width: 100%; margin-top: 8px;" onclick="closeModal('paymentModal')">Close</button>
     </div>
 </div>
 
@@ -154,6 +180,8 @@
     const REGISTRY_API = "https://suhs-registry.michaelaroot1987.workers.dev";
     
     // Application State
+    let authToken = null;
+    let activeDomain = null;
     let pageCount = 1;
     let isPaidTier = false;
     let currentPage = 'home';
@@ -163,6 +191,91 @@
     let siteData = {
         home: { background: '#0d1118', bgImage: '', elements: [] }
     };
+
+    // Check existing session on load
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedToken = localStorage.getItem('suhs_token');
+        const savedDomain = localStorage.getItem('suhs_domain');
+
+        if (savedToken && savedDomain) {
+            authToken = savedToken;
+            activeDomain = savedDomain;
+            unlockWorkspace();
+            loadRemoteSiteContent();
+        }
+    });
+
+    // Session Authentication
+    async function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const authError = document.getElementById('authError');
+        const submitBtn = document.getElementById('loginSubmitBtn');
+
+        authError.style.display = 'none';
+        submitBtn.innerText = "Authenticating...";
+
+        try {
+            const response = await fetch(REGISTRY_API + "/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email, password: password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.token) {
+                authToken = data.token;
+                activeDomain = data.domain || email.split('@')[0];
+
+                localStorage.setItem('suhs_token', authToken);
+                localStorage.setItem('suhs_domain', activeDomain);
+
+                unlockWorkspace();
+                loadRemoteSiteContent();
+            } else {
+                authError.innerText = data.error || "Invalid credentials.";
+                authError.style.display = 'block';
+            }
+        } catch (error) {
+            authError.innerText = "Gateway connection error. Check API setup.";
+            authError.style.display = 'block';
+        } finally {
+            submitBtn.innerText = "Authenticate & Open Workspace";
+        }
+    }
+
+    function unlockWorkspace() {
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('workspace').classList.add('authenticated');
+        document.getElementById('activeDomainDisplay').innerText = activeDomain + ".suhs";
+        document.getElementById('userBadge').style.display = 'block';
+        document.getElementById('logoutBtn').style.display = 'block';
+    }
+
+    function logout() {
+        localStorage.removeItem('suhs_token');
+        localStorage.removeItem('suhs_domain');
+        location.reload();
+    }
+
+    async function loadRemoteSiteContent() {
+        try {
+            const response = await fetch(`${REGISTRY_API}/api/content?domain=${activeDomain}`, {
+                headers: { "Authorization": `Bearer ${authToken}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.siteStructure) {
+                    siteData = data.siteStructure;
+                    loadPageCanvasState(currentPage);
+                }
+            }
+        } catch (e) {
+            console.log("No previous saved structure found. Using clean canvas.");
+        }
+    }
 
     // Tab Management & Payment Logic
     function handleNewPageRequest() {
@@ -175,7 +288,6 @@
         const pageId = 'page_' + pageCount;
         siteData[pageId] = { background: '#0d1118', bgImage: '', elements: [] };
 
-        // Create Tab Button
         const tabBar = document.getElementById('tabBar');
         const addBtn = tabBar.querySelector('.add-tab-btn');
         const newTab = document.createElement('button');
@@ -185,7 +297,6 @@
         newTab.onclick = function() { switchTab(pageId, newTab); };
         tabBar.insertBefore(newTab, addBtn);
 
-        // Automatically drop a navigation button linking to this page on the canvas
         const navBtn = addElement('button', `Go to Page ${pageCount}`);
         navBtn.style.top = '20px';
         navBtn.style.left = (20 + (pageCount * 120)) + 'px';
@@ -205,13 +316,13 @@
 
     function resolvePayment() {
         isPaidTier = true;
-        closeModal();
+        closeModal('paymentModal');
         alert("Payment authorized! You can now create unlimited pages.");
         handleNewPageRequest();
     }
 
-    function closeModal() {
-        document.getElementById('paymentModal').style.display = 'none';
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
     }
 
     // Canvas Drag & Drop System
@@ -392,6 +503,8 @@
         canvas.innerHTML = '';
 
         const state = siteData[pageId];
+        if (!state) return;
+
         canvas.style.backgroundColor = state.background || '#0d1118';
         canvas.style.backgroundImage = state.bgImage ? `url(${state.bgImage})` : 'none';
 
@@ -439,7 +552,6 @@
             const canvas = document.getElementById('canvas');
             canvas.innerHTML = codeEditor.value;
             
-            // Re-bind click and drag handlers to imported HTML elements
             canvas.querySelectorAll('.canvas-element').forEach(el => {
                 makeDraggable(el);
                 el.onclick = (e) => selectElement(e, el);
@@ -461,7 +573,7 @@
         const fullHtml = document.getElementById('canvas').innerHTML;
 
         const payload = {
-            domain: "testcompany", // Dynamics from user session
+            domain: activeDomain,
             siteStructure: siteData,
             compiledHtml: fullHtml
         };
@@ -469,14 +581,17 @@
         try {
             const res = await fetch(REGISTRY_API + "/api/content/update", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authToken}`
+                },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("Site updated successfully on the SUHS network!");
+                alert(`Site '${activeDomain}.suhs' updated successfully on the SUHS network!`);
             } else {
-                alert("Published locally. Sync endpoint returned status: " + res.status);
+                alert("Sync endpoint returned status: " + res.status);
             }
         } catch (e) {
             alert("Error connecting to registry gateway.");
