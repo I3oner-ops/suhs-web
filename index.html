@@ -1,330 +1,2089 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta charset="UTF-8">
 
-    <title>SUHS — An Alternative Namespace</title>
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-    <meta
-        name="description"
-        content="SUHS is an independent namespace and gateway system designed to provide an alternative way to discover and access websites."
-    >
+<title>SUHS — Registry</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta
+  name="description"
+  content="SUHS independent namespace registry, profiles, domains and virtual email."
+>
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #080b10;
-            color: #ffffff;
-        }
+<style>
 
-        header {
-            padding: 24px 7%;
-            border-bottom: 1px solid #222831;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+* {
+  box-sizing: border-box;
+}
 
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 3px;
-        }
+:root {
+  --bg: #02050b;
+  --bg2: #07111b;
+  --bg3: #0c1826;
+  --panel: rgba(8, 16, 28, .88);
+  --border: #233247;
+  --text: #edf4ff;
+  --soft: #dbe7f7;
+  --muted: #91a4bd;
+  --cyan: #87dbff;
+  --gold: #d6b160;
+  --red: #ff8f8f;
+  --green: #73e2a3;
+}
 
-        nav a {
-            color: #ffffff;
-            text-decoration: none;
-            margin-left: 25px;
-        }
+html {
+  scroll-behavior: smooth;
+}
 
-        .hero {
-            max-width: 1100px;
-            margin: auto;
-            padding: 120px 7% 100px;
-        }
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      #10263d 0,
+      var(--bg) 45%
+    );
 
-        .hero h1 {
-            font-size: clamp(48px, 8vw, 92px);
-            line-height: 0.95;
-            margin: 0 0 30px;
-        }
+  color: var(--text);
 
-        .hero p {
-            max-width: 700px;
-            font-size: 21px;
-            line-height: 1.6;
-            color: #b8c0cc;
-        }
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-        .button {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 15px 24px;
-            background: #ffffff;
-            color: #080b10;
-            text-decoration: none;
-            font-weight: 700;
-            border-radius: 8px;
-        }
+  min-height: 100vh;
+}
 
-        section {
-            max-width: 1100px;
-            margin: auto;
-            padding: 80px 7%;
-        }
+a {
+  color: inherit;
+}
 
-        h2 {
-            font-size: 38px;
-        }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 20px;
-        }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-        .card {
-            padding: 28px;
-            border: 1px solid #222831;
-            border-radius: 12px;
-            background: #0d1118;
-        }
+  padding: 20px 7%;
 
-        .card h3 {
-            margin-top: 0;
-        }
+  background:
+    rgba(2, 5, 11, .92);
 
-        .card p {
-            color: #aeb7c4;
-            line-height: 1.6;
-        }
+  backdrop-filter: blur(12px);
 
-        footer {
-            padding: 50px 7%;
-            border-top: 1px solid #222831;
-            color: #78818f;
-        }
-    </style>
+  border-bottom:
+    1px solid var(--border);
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 4px;
+}
+
+nav {
+  display: flex;
+  gap: 24px;
+}
+
+nav a {
+  color: var(--soft);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+nav a:hover {
+  color: var(--cyan);
+}
+
+main {
+  width: 100%;
+}
+
+.hero {
+  max-width: 1150px;
+  margin: auto;
+  padding: 105px 7% 80px;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 18px 0 25px;
+
+  font-size:
+    clamp(48px, 8vw, 92px);
+
+  line-height: .94;
+}
+
+.hero p {
+  max-width: 730px;
+
+  color: var(--muted);
+
+  font-size: 20px;
+
+  line-height: 1.7;
+}
+
+section {
+  max-width: 1150px;
+  margin: auto;
+  padding: 75px 7%;
+}
+
+section h2 {
+  font-size: 38px;
+  margin-top: 0;
+}
+
+.section-copy {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 760px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(230px, 1fr)
+    );
+
+  gap: 18px;
+}
+
+.card {
+  padding: 25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(12, 24, 38, .95),
+      rgba(4, 10, 18, .95)
+    );
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 12px;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.button {
+  display: inline-block;
+
+  padding: 13px 20px;
+
+  border: 1px solid var(--soft);
+  border-radius: 8px;
+
+  background: var(--soft);
+  color: var(--bg);
+
+  text-decoration: none;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.button.secondary {
+  background: transparent;
+  color: var(--soft);
+  border-color: var(--border);
+}
+
+.button:hover {
+  opacity: .88;
+}
+
+.auth-panel,
+.dashboard {
+  display: none;
+
+  max-width: 1150px;
+  margin: auto;
+  padding: 60px 7% 100px;
+}
+
+.auth-box {
+  max-width: 480px;
+
+  padding: 30px;
+
+  background: var(--panel);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 14px;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+
+label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--soft);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+input,
+textarea {
+  width: 100%;
+
+  padding: 13px;
+
+  background: #030914;
+
+  color: var(--text);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 8px;
+
+  outline: none;
+
+  font: inherit;
+}
+
+textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--cyan);
+}
+
+.status {
+  min-height: 25px;
+
+  margin-top: 15px;
+
+  color: var(--muted);
+
+  line-height: 1.5;
+}
+
+.status.error {
+  color: var(--red);
+}
+
+.status.success {
+  color: var(--green);
+}
+
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-bottom: 30px;
+  padding: 18px 20px;
+
+  background: var(--panel);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 12px;
+}
+
+.user-bar small {
+  color: var(--muted);
+}
+
+.domain-card {
+  position: relative;
+}
+
+.domain-type {
+  color: var(--gold);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.domain-name {
+  margin: 8px 0;
+
+  font-size: 23px;
+
+  word-break: break-word;
+}
+
+.domain-status {
+  color: var(--green);
+
+  font-size: 13px;
+
+  margin-bottom: 15px;
+}
+
+.domain-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.small-button {
+  display: inline-block;
+
+  padding: 9px 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 7px;
+
+  background: #0b1725;
+
+  color: var(--soft);
+
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.small-button:hover {
+  border-color: var(--cyan);
+}
+
+.mail-list {
+  display: grid;
+  gap: 10px;
+}
+
+.mail-item {
+  padding: 17px;
+
+  border:
+    1px solid var(--border);
+
+  background: #07111b;
+
+  border-radius: 9px;
+
+  cursor: pointer;
+}
+
+.mail-item:hover {
+  border-color: var(--cyan);
+}
+
+.mail-item.unread {
+  border-color: var(--cyan);
+}
+
+.mail-subject {
+  font-weight: 800;
+}
+
+.mail-meta {
+  margin-top: 6px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+.mail-body {
+  white-space: pre-wrap;
+
+  padding: 20px;
+
+  margin-top: 15px;
+
+  background: #030914;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 8px;
+
+  color: var(--soft);
+
+  line-height: 1.6;
+}
+
+.profile-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(280px, 1fr)
+    );
+
+  gap: 20px;
+}
+
+.empty {
+  padding: 30px;
+
+  color: var(--muted);
+
+  border:
+    1px dashed var(--border);
+
+  border-radius: 10px;
+}
+
+footer {
+  padding: 50px 7%;
+
+  border-top:
+    1px solid var(--border);
+
+  color: #60728a;
+
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+
+  header {
+    padding: 17px 5%;
+  }
+
+  nav {
+    display: none;
+  }
+
+  .hero,
+  section,
+  .auth-panel,
+  .dashboard {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .hero {
+    padding-top: 75px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+  }
+
+  .user-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+</style>
+
 </head>
 
 <body>
 
 <header>
-    <div class="logo">SUHS</div>
 
-    <nav>
-        <a href="#about">About</a>
-        <a href="#registry">Registry</a>
-        <a href="#gateway">Gateway</a>
-        <a href="#register">Register</a>
-    </nav>
+  <div class="logo">
+    SUHS
+  </div>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#registry">Registry</a>
+    <a href="#register">Register</a>
+    <a href="#login">Login</a>
+  </nav>
+
 </header>
 
 <main>
 
+<!-- ================================================================
+     PUBLIC HERO
+================================================================ -->
+
 <section class="hero">
 
-    <h1>
-        A namespace<br>
-        outside the<br>
-        traditional web.
-    </h1>
+  <div class="eyebrow">
+    Independent Namespace Infrastructure
+  </div>
 
-    <p>
-        SUHS is an independent namespace and gateway
-        system designed to give people another way to
-        discover, publish, and manage Internet resources.
-    </p>
+  <h1>
+    Your namespace.<br>
+    Your profile.<br>
+    Your domain.
+  </h1>
 
-    <a class="button" href="#register">
-        Register a SUHS domain
-    </a>
+  <p>
+    SUHS provides an independent namespace for websites,
+    administrative domains, profiles and virtual email
+    identities.
+  </p>
+
+  <a
+    class="button"
+    href="#register"
+  >
+    Register a SUHS domain
+  </a>
 
 </section>
+
+<!-- ================================================================
+     ABOUT
+================================================================ -->
 
 <section id="about">
 
-    <h2>What is SUHS?</h2>
+  <h2>
+    What is SUHS?
+  </h2>
 
-    <p>
-        SUHS provides an alternative namespace for websites
-        and services. The SUHS Gateway allows participating
-        devices to resolve SUHS addresses without requiring
-        users to manually configure their network.
-    </p>
+  <p class="section-copy">
+    SUHS provides an alternative namespace and gateway
+    system for participating websites and services.
+    The registry maintains domain ownership, administrative
+    relationships, profiles and virtual mailbox identities.
+  </p>
 
 </section>
+
+<!-- ================================================================
+     REGISTRY
+================================================================ -->
 
 <section id="registry">
 
-    <h2>The Registry</h2>
+  <h2>
+    The Registry
+  </h2>
 
-    <div class="grid">
+  <div class="grid">
 
-        <div class="card">
-            <h3>.suhs</h3>
-            <p>
-                Public-facing websites, applications,
-                products, and services.
-            </p>
-        </div>
+    <div class="card">
 
-        <div class="card">
-            <h3>.root</h3>
-            <p>
-                Administrative environments associated
-                with SUHS sites.
-            </p>
-        </div>
+      <h3>
+        .suhs
+      </h3>
 
-        <div class="card">
-            <h3>Independent Registry</h3>
-            <p>
-                SUHS maintains its own namespace registry
-                and domain relationships.
-            </p>
-        </div>
+      <p>
+        The public namespace used for websites,
+        applications, projects and services.
+      </p>
 
     </div>
 
+    <div class="card">
+
+      <h3>
+        .root
+      </h3>
+
+      <p>
+        The paired administrative namespace used
+        to manage the corresponding public .suhs
+        domain.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <h3>
+        Profile Identity
+      </h3>
+
+      <p>
+        Every registered owner can have a registry
+        profile associated with their SUHS identity.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <h3>
+        Virtual Email
+      </h3>
+
+      <p>
+        SUHS profiles can receive mail through their
+        allocated SUHS email identity.
+      </p>
+
+    </div>
+
+  </div>
+
 </section>
 
-<section id="gateway">
-
-    <h2>SUHS Gateway</h2>
-
-    <p>
-        Install the SUHS Gateway to allow compatible devices
-        to resolve SUHS addresses automatically.
-    </p>
-
-</section>
+<!-- ================================================================
+     REGISTER
+================================================================ -->
 
 <section id="register">
 
-    <h2>Register your SUHS domain</h2>
+  <h2>
+    Register
+  </h2>
 
-    <p>
-        Choose a namespace for your website or project.
-        Registrations initially enter a reserved state and
-        require verification before activation.
-    </p>
+  <p class="section-copy">
+    Register a public .suhs namespace and its paired
+    .root administrative namespace.
+  </p>
 
-    <form id="registrationForm">
+  <form id="registrationForm">
+
+    <div class="field">
+
+      <label for="registerDomain">
+        Domain Name
+      </label>
+
+      <input
+        id="registerDomain"
+        type="text"
+        placeholder="yourname"
+        autocomplete="username"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label for="registerEmail">
+        Email
+      </label>
+
+      <input
+        id="registerEmail"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label for="registerPassword">
+        Password
+      </label>
+
+      <input
+        id="registerPassword"
+        type="password"
+        autocomplete="new-password"
+        required
+      >
+
+    </div>
+
+    <button
+      class="button"
+      type="submit"
+    >
+      Register
+    </button>
+
+  </form>
+
+  <div
+    id="registrationStatus"
+    class="status"
+  ></div>
+
+</section>
+
+<!-- ================================================================
+     LOGIN
+================================================================ -->
+
+<section
+  id="login"
+  class="auth-panel"
+>
+
+  <h2>
+    Sign in
+  </h2>
+
+  <p class="section-copy">
+    Sign in with your SUHS username, SUHS email address,
+    or linked external email address.
+  </p>
+
+  <div class="auth-box">
+
+    <form id="loginForm">
+
+      <div class="field">
+
+        <label for="loginIdentifier">
+          Username or Email
+        </label>
 
         <input
-            id="domain"
-            type="text"
-            placeholder="yourname"
-            required
+          id="loginIdentifier"
+          type="text"
+          autocomplete="username"
+          required
         >
 
-        <br><br>
+      </div>
+
+      <div class="field">
+
+        <label for="loginPassword">
+          Password
+        </label>
 
         <input
-            id="email"
-            type="email"
-            placeholder="your email"
-            required
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          required
         >
 
-        <br><br>
+      </div>
 
-        <input
-            id="password"
-            type="password"
-            placeholder="your password"
-            required
-        >
-
-        <br><br>
-
-        <button class="button" type="submit">
-            Register
-        </button>
+      <button
+        class="button"
+        type="submit"
+      >
+        Sign in
+      </button>
 
     </form>
 
-    <pre id="result"></pre>
+    <div
+      id="loginStatus"
+      class="status"
+    ></div>
+
+  </div>
+
+</section>
+
+<!-- ================================================================
+     DASHBOARD
+================================================================ -->
+
+<section
+  id="dashboard"
+  class="dashboard"
+>
+
+  <div class="user-bar">
+
+    <div>
+
+      <strong id="dashboardName">
+        SUHS User
+      </strong>
+
+      <br>
+
+      <small id="dashboardEmail"></small>
+
+    </div>
+
+    <button
+      class="button secondary"
+      id="logoutButton"
+      type="button"
+    >
+      Sign out
+    </button>
+
+  </div>
+
+  <!-- PROFILE -->
+
+  <section style="padding:0 0 60px 0">
+
+    <h2>
+      Profile
+    </h2>
+
+    <div class="profile-grid">
+
+      <div class="card">
+
+        <div class="field">
+
+          <label>
+            SUHS Email
+          </label>
+
+          <input
+            id="profileEmail"
+            readonly
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Username
+          </label>
+
+          <input
+            id="profileUsername"
+            readonly
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label for="profileDisplayName">
+            Display Name
+          </label>
+
+          <input
+            id="profileDisplayName"
+          >
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <div class="field">
+
+          <label for="profileBio">
+            Bio
+          </label>
+
+          <textarea
+            id="profileBio"
+          ></textarea>
+
+        </div>
+
+        <div class="field">
+
+          <label for="profileAvatar">
+            Avatar URL
+          </label>
+
+          <input
+            id="profileAvatar"
+          >
+
+        </div>
+
+        <button
+          class="button"
+          id="saveProfileButton"
+          type="button"
+        >
+          Save Profile
+        </button>
+
+        <div
+          id="profileStatus"
+          class="status"
+        ></div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- DOMAINS -->
+
+  <section style="padding:0 0 60px 0">
+
+    <h2>
+      My Domains
+    </h2>
+
+    <div
+      id="domainList"
+      class="grid"
+    ></div>
+
+  </section>
+
+  <!-- EMAIL -->
+
+  <section style="padding:0 0 60px 0">
+
+    <h2>
+      Profile Email
+    </h2>
+
+    <p class="section-copy">
+      Mail delivered to your SUHS profile address appears
+      in your virtual inbox.
+    </p>
+
+    <div class="card">
+
+      <div class="field">
+
+        <label>
+          Your SUHS Email Address
+        </label>
+
+        <input
+          id="mailAddress"
+          readonly
+        >
+
+      </div>
+
+      <button
+        class="button secondary"
+        id="refreshMailButton"
+        type="button"
+      >
+        Refresh Inbox
+      </button>
+
+    </div>
+
+    <br>
+
+    <div
+      id="mailList"
+      class="mail-list"
+    ></div>
+
+    <div
+      id="mailStatus"
+      class="status"
+    ></div>
+
+  </section>
+
+  <!-- SEND -->
+
+  <section style="padding:0 0 60px 0">
+
+    <h2>
+      Send Email
+    </h2>
+
+    <div class="card">
+
+      <div class="field">
+
+        <label for="recipientEmail">
+          Recipient
+        </label>
+
+        <input
+          id="recipientEmail"
+          type="email"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label for="outboundBody">
+          Message
+        </label>
+
+        <textarea
+          id="outboundBody"
+        ></textarea>
+
+      </div>
+
+      <button
+        class="button"
+        id="sendMailButton"
+        type="button"
+      >
+        Send Email
+      </button>
+
+      <div
+        id="sendMailStatus"
+        class="status"
+      ></div>
+
+    </div>
+
+  </section>
 
 </section>
 
 </main>
 
 <footer>
-    SUHS — Independent Namespace Infrastructure
+  SUHS — Independent Namespace Infrastructure
 </footer>
 
 <script>
 
 const REGISTRY_API =
-    "https://suhs-registry.michaelaroot1987.workers.dev";
+  "https://suhs-registry.michaelaroot1987.workers.dev";
+
+const AUTH_STORAGE_KEY =
+  "suhs_basic_auth";
+
+let currentAccount =
+  null;
+
+/* ================================================================
+   ELEMENTS
+================================================================ */
+
+const loginSection =
+  document.getElementById(
+    "login"
+  );
+
+const dashboard =
+  document.getElementById(
+    "dashboard"
+  );
+
+const loginStatus =
+  document.getElementById(
+    "loginStatus"
+  );
+
+const registrationStatus =
+  document.getElementById(
+    "registrationStatus"
+  );
+
+/* ================================================================
+   BASIC AUTH
+================================================================ */
+
+function makeBasicAuth(
+  identifier,
+  password
+) {
+
+  const raw =
+    identifier.trim().toLowerCase() +
+    ":" +
+    password;
+
+  return (
+    "Basic " +
+    btoa(
+      unescape(
+        encodeURIComponent(raw)
+      )
+    )
+  );
+}
+
+function getAuth() {
+
+  return sessionStorage.getItem(
+    AUTH_STORAGE_KEY
+  );
+}
+
+function setAuth(
+  auth
+) {
+
+  sessionStorage.setItem(
+    AUTH_STORAGE_KEY,
+    auth
+  );
+}
+
+function clearAuth() {
+
+  sessionStorage.removeItem(
+    AUTH_STORAGE_KEY
+  );
+}
+
+/* ================================================================
+   STATUS
+================================================================ */
+
+function setStatus(
+  element,
+  message,
+  type = ""
+) {
+
+  element.textContent =
+    message;
+
+  element.className =
+    "status " + type;
+}
+
+/* ================================================================
+   AUTHENTICATED FETCH
+================================================================ */
+
+async function api(
+  path,
+  options = {}
+) {
+
+  const auth =
+    getAuth();
+
+  const headers = {
+    ...(options.headers || {})
+  };
+
+  if (
+    options.body &&
+    !headers["Content-Type"]
+  ) {
+    headers["Content-Type"] =
+      "application/json";
+  }
+
+  if (auth) {
+    headers.Authorization =
+      auth;
+  }
+
+  const response =
+    await fetch(
+      REGISTRY_API + path,
+      {
+        ...options,
+        headers
+      }
+    );
+
+  let data = null;
+
+  try {
+    data =
+      await response.json();
+  } catch {
+    data = {};
+  }
+
+  if (
+    response.status === 401
+  ) {
+
+    clearAuth();
+
+    showLoggedOut();
+
+    throw new Error(
+      "Authentication expired."
+    );
+  }
+
+  if (!response.ok) {
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      `HTTP ${response.status}`
+    );
+  }
+
+  return data;
+}
+
+/* ================================================================
+   LOGIN
+================================================================ */
 
 document
-    .getElementById("registrationForm")
-    .addEventListener("submit", async function(event) {
+  .getElementById(
+    "loginForm"
+  )
+  .addEventListener(
+    "submit",
+    async event => {
 
-        event.preventDefault();
+      event.preventDefault();
 
-        const domain =
-            document.getElementById("domain").value;
+      const identifier =
+        document
+          .getElementById(
+            "loginIdentifier"
+          )
+          .value
+          .trim();
 
-        const email =
-            document.getElementById("email").value;
+      const password =
+        document
+          .getElementById(
+            "loginPassword"
+          )
+          .value;
 
-        const password =
-            document.getElementById("password").value;
+      setStatus(
+        loginStatus,
+        "Authenticating..."
+      );
 
-        const result =
-            document.getElementById("result");
+      try {
 
-        result.textContent =
-            "Submitting registration...";
+        const response =
+          await fetch(
+            REGISTRY_API +
+              "/api/auth/login",
+            {
+              method: "POST",
 
-        try {
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-            const response =
-                await fetch(
-                    REGISTRY_API + "/register",
-                    {
-                        method: "POST",
+              body:
+                JSON.stringify({
+                  loginIdentifier:
+                    identifier,
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                  password:
+                    password
+                })
+            }
+          );
 
-                        body: JSON.stringify({
-                            name: domain,
-                            email: email,
-                            password: password
-                        })
-                    }
-                );
+        const data =
+          await response.json();
 
-            const data =
-                await response.json();
+        if (!response.ok) {
 
-            result.textContent =
-                JSON.stringify(data, null, 2);
-
-        } catch (error) {
-
-            result.textContent =
-                "Registration service unavailable.";
+          throw new Error(
+            data.message ||
+            data.error ||
+            "Authentication failed."
+          );
         }
 
-    });
+        const basic =
+          makeBasicAuth(
+            identifier,
+            password
+          );
+
+        setAuth(
+          basic
+        );
+
+        setStatus(
+          loginStatus,
+          "Signed in successfully.",
+          "success"
+        );
+
+        document
+          .getElementById(
+            "loginPassword"
+          )
+          .value = "";
+
+        await loadAccount();
+
+        window.location.hash =
+          "dashboard";
+
+      } catch (error) {
+
+        clearAuth();
+
+        setStatus(
+          loginStatus,
+          error.message ||
+            "Authentication failed.",
+          "error"
+        );
+      }
+
+    }
+  );
+
+/* ================================================================
+   ACCOUNT
+================================================================ */
+
+async function loadAccount() {
+
+  const data =
+    await api(
+      "/api/account"
+    );
+
+  currentAccount =
+    data;
+
+  renderAccount(
+    data
+  );
+
+  dashboard.style.display =
+    "block";
+
+  loginSection.style.display =
+    "none";
+
+  await loadInbox();
+}
+
+/* ================================================================
+   ACCOUNT DISPLAY
+================================================================ */
+
+function renderAccount(
+  data
+) {
+
+  const user =
+    data.user || {};
+
+  const profile =
+    data.profile || {};
+
+  document
+    .getElementById(
+      "dashboardName"
+    )
+    .textContent =
+      profile.display_name ||
+      user.email ||
+      "SUHS User";
+
+  document
+    .getElementById(
+      "dashboardEmail"
+    )
+    .textContent =
+      user.email || "";
+
+  document
+    .getElementById(
+      "profileEmail"
+    )
+    .value =
+      profile.owner_email ||
+      user.email ||
+      "";
+
+  document
+    .getElementById(
+      "profileUsername"
+    )
+    .value =
+      profile.username ||
+      "";
+
+  document
+    .getElementById(
+      "profileDisplayName"
+    )
+    .value =
+      profile.display_name ||
+      "";
+
+  document
+    .getElementById(
+      "profileBio"
+    )
+    .value =
+      profile.bio ||
+      "";
+
+  document
+    .getElementById(
+      "profileAvatar"
+    )
+    .value =
+      profile.avatar_url ||
+      "";
+
+  document
+    .getElementById(
+      "mailAddress"
+    )
+    .value =
+      profile.owner_email ||
+      user.email ||
+      "";
+
+  renderDomains(
+    data.domains || []
+  );
+}
+
+/* ================================================================
+   DOMAIN LIST
+================================================================ */
+
+function renderDomains(
+  domains
+) {
+
+  const container =
+    document.getElementById(
+      "domainList"
+    );
+
+  container.innerHTML = "";
+
+  if (!domains.length) {
+
+    container.innerHTML =
+      `<div class="empty">
+        No domains are associated with this account.
+      </div>`;
+
+    return;
+  }
+
+  for (
+    const domain of domains
+  ) {
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "card domain-card";
+
+    const isRoot =
+      domain.tld === "root";
+
+    const renderURL =
+      REGISTRY_API +
+      "/render/" +
+      encodeURIComponent(
+        domain.fqdn
+      ) +
+      "/index.html";
+
+    card.innerHTML = `
+      <div class="domain-type">
+        ${isRoot ? ".ROOT ADMIN" : ".SUHS PUBLIC"}
+      </div>
+
+      <div class="domain-name">
+        ${escapeHTML(domain.fqdn)}
+      </div>
+
+      <div class="domain-status">
+        ${escapeHTML(domain.status || "unknown")}
+      </div>
+
+      <div class="domain-actions">
+
+        ${
+          isRoot
+            ? `
+              <a
+                class="small-button"
+                href="${renderURL}"
+              >
+                Open Editor
+              </a>
+            `
+            : `
+              <a
+                class="small-button"
+                href="${REGISTRY_API}/render/${encodeURIComponent(domain.fqdn)}/index.html"
+                target="_blank"
+              >
+                View Site
+              </a>
+            `
+        }
+
+      </div>
+    `;
+
+    container.appendChild(
+      card
+    );
+  }
+}
+
+/* ================================================================
+   PROFILE UPDATE
+================================================================ */
+
+document
+  .getElementById(
+    "saveProfileButton"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      const status =
+        document
+          .getElementById(
+            "profileStatus"
+          );
+
+      setStatus(
+        status,
+        "Saving profile..."
+      );
+
+      try {
+
+        const data =
+          await api(
+            "/profile/update",
+            {
+              method:
+                "POST",
+
+              body:
+                JSON.stringify({
+                  display_name:
+                    document
+                      .getElementById(
+                        "profileDisplayName"
+                      )
+                      .value,
+
+                  bio:
+                    document
+                      .getElementById(
+                        "profileBio"
+                      )
+                      .value,
+
+                  avatar_url:
+                    document
+                      .getElementById(
+                        "profileAvatar"
+                      )
+                      .value
+                })
+            }
+          );
+
+        setStatus(
+          status,
+          data.message ||
+            "Profile updated.",
+          "success"
+        );
+
+        await loadAccount();
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          error.message,
+          "error"
+        );
+      }
+
+    }
+  );
+
+/* ================================================================
+   INBOX
+================================================================ */
+
+async function loadInbox() {
+
+  const list =
+    document.getElementById(
+      "mailList"
+    );
+
+  const status =
+    document.getElementById(
+      "mailStatus"
+    );
+
+  if (
+    !currentAccount ||
+    !currentAccount.profile
+  ) {
+
+    list.innerHTML =
+      `<div class="empty">
+        No profile is currently available.
+      </div>`;
+
+    return;
+  }
+
+  setStatus(
+    status,
+    "Loading inbox..."
+  );
+
+  try {
+
+    const profileId =
+      currentAccount.profile.id;
+
+    /*
+     * The current /api/account profile SELECT does not
+     * return id, so retrieve it from the authenticated
+     * profile when needed.
+     */
+
+    const profileEmail =
+      currentAccount.profile.owner_email ||
+      currentAccount.user.email;
+
+    const profileResponse =
+      await api(
+        "/profile/" +
+        encodeURIComponent(
+          profileEmail
+        )
+      );
+
+    /*
+     * /profile/:email currently returns only the
+     * public profile and not its numeric ID.
+     *
+     * The current Worker therefore cannot safely
+     * address /api/mail/inbox/:profileId from this
+     * registry page without exposing an ID endpoint.
+     */
+
+    list.innerHTML =
+      `<div class="empty">
+        Inbox endpoint is available in the registry Worker,
+        but the current profile-read endpoint does not expose
+        the profile ID required by /api/mail/inbox/:profileId.
+      </div>`;
+
+    setStatus(
+      status,
+      ""
+    );
+
+  } catch (error) {
+
+    setStatus(
+      status,
+      error.message,
+      "error"
+    );
+  }
+}
+
+/* ================================================================
+   SEND MAIL
+================================================================ */
+
+document
+  .getElementById(
+    "sendMailButton"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      const status =
+        document
+          .getElementById(
+            "sendMailStatus"
+          );
+
+      const recipient =
+        document
+          .getElementById(
+            "recipientEmail"
+          )
+          .value
+          .trim();
+
+      const body =
+        document
+          .getElementById(
+            "outboundBody"
+          )
+          .value
+          .trim();
+
+      if (
+        !recipient ||
+        !body
+      ) {
+
+        setStatus(
+          status,
+          "Recipient and message are required.",
+          "error"
+        );
+
+        return;
+      }
+
+      setStatus(
+        status,
+        "Sending..."
+      );
+
+      try {
+
+        /*
+         * The current Worker requires profileId.
+         * /api/account should expose it.
+         */
+
+        const profileId =
+          currentAccount &&
+          currentAccount.profile
+            ? currentAccount.profile.id
+            : null;
+
+        if (!profileId) {
+
+          throw new Error(
+            "Authenticated profile ID is unavailable."
+          );
+        }
+
+        const data =
+          await api(
+            "/api/mail/send",
+            {
+              method:
+                "POST",
+
+              body:
+                JSON.stringify({
+                  profileId:
+                    profileId,
+
+                  recipientEmail:
+                    recipient,
+
+                  body:
+                    body
+                })
+            }
+          );
+
+        setStatus(
+          status,
+          data.success
+            ? "Email sent successfully."
+            : "Email could not be sent.",
+          data.success
+            ? "success"
+            : "error"
+        );
+
+        if (
+          data.success
+        ) {
+
+          document
+            .getElementById(
+              "outboundBody"
+            )
+            .value = "";
+        }
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          error.message,
+          "error"
+        );
+      }
+
+    }
+  );
+
+/* ================================================================
+   REFRESH MAIL
+================================================================ */
+
+document
+  .getElementById(
+    "refreshMailButton"
+  )
+  .addEventListener(
+    "click",
+    loadInbox
+  );
+
+/* ================================================================
+   LOGOUT
+================================================================ */
+
+document
+  .getElementById(
+    "logoutButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      clearAuth();
+
+      currentAccount =
+        null;
+
+      showLoggedOut();
+
+      window.location.hash =
+        "login";
+    }
+  );
+
+/* ================================================================
+   LOGGED-OUT STATE
+================================================================ */
+
+function showLoggedOut() {
+
+  dashboard.style.display =
+    "none";
+
+  loginSection.style.display =
+    "block";
+
+  currentAccount =
+    null;
+}
+
+/* ================================================================
+   REGISTRATION
+================================================================ */
+
+document
+  .getElementById(
+    "registrationForm"
+  )
+  .addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      const name =
+        document
+          .getElementById(
+            "registerDomain"
+          )
+          .value
+          .trim();
+
+      const email =
+        document
+          .getElementById(
+            "registerEmail"
+          )
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById(
+            "registerPassword"
+          )
+          .value;
+
+      setStatus(
+        registrationStatus,
+        "Registering domain..."
+      );
+
+      try {
+
+        const response =
+          await fetch(
+            REGISTRY_API +
+              "/register",
+            {
+              method:
+                "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify({
+                  name,
+                  email,
+                  password
+                })
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.message ||
+            data.error ||
+            "Registration failed."
+          );
+        }
+
+        setStatus(
+          registrationStatus,
+          `Registered ${data.public_domain}. Your administrative domain is ${data.admin_domain}.`,
+          "success"
+        );
+
+        /*
+         * Automatically populate login.
+         */
+        document
+          .getElementById(
+            "loginIdentifier"
+          )
+          .value =
+            name;
+
+        document
+          .getElementById(
+            "loginPassword"
+          )
+          .value =
+            password;
+
+        window.location.hash =
+          "login";
+
+      } catch (error) {
+
+        setStatus(
+          registrationStatus,
+          error.message,
+          "error"
+        );
+      }
+
+    }
+  );
+
+/* ================================================================
+   ESCAPE HTML
+================================================================ */
+
+function escapeHTML(
+  value
+) {
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+/* ================================================================
+   INITIAL AUTH CHECK
+================================================================ */
+
+async function initialize() {
+
+  const auth =
+    getAuth();
+
+  if (!auth) {
+
+    showLoggedOut();
+
+    return;
+  }
+
+  try {
+
+    await loadAccount();
+
+  } catch {
+
+    clearAuth();
+
+    showLoggedOut();
+  }
+
+}
+
+initialize();
 
 </script>
 
