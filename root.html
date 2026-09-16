@@ -118,6 +118,11 @@ button {
     background: #323a45;
 }
 
+.btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
 .btn-primary {
     background: #2563eb;
     border-color: #2563eb;
@@ -229,6 +234,13 @@ button {
     outline: none;
 
     font-size: 14px;
+}
+
+.field input:disabled,
+.field textarea:disabled,
+.field select:disabled,
+.field input[readonly] {
+    opacity: .75;
 }
 
 .field textarea {
@@ -690,6 +702,60 @@ button {
     grid-column: 1 / -1;
 }
 
+.profile-selection {
+    margin-bottom: 18px;
+}
+
+.profile-selection label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #aeb7c4;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.profile-selection select {
+    width: 100%;
+
+    background: #161b22;
+
+    color: #ffffff;
+
+    border: 1px solid #2b3440;
+
+    border-radius: 7px;
+
+    padding: 11px;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+.profile-selection-info {
+    margin-top: 8px;
+
+    padding: 10px;
+
+    background: #111827;
+
+    border: 1px solid #222831;
+
+    border-radius: 7px;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
 /* ========================================================================== */
 /* EMAIL                                                                      */
 /* ========================================================================== */
@@ -1013,6 +1079,27 @@ button {
 
             </div>
 
+            <div
+                class="sidebar-section"
+                id="profileSelectorSection"
+            >
+
+                <div class="sidebar-title">
+                    Active Profile
+                </div>
+
+                <select
+                    class="domain-select"
+                    id="profileSelect"
+                ></select>
+
+                <div
+                    class="profile-selection-info"
+                    id="profileInfo"
+                ></div>
+
+            </div>
+
             <div class="sidebar-section">
 
                 <div class="sidebar-title">
@@ -1309,7 +1396,7 @@ button {
 
                     <p>
                         Manage the public profile associated
-                        with your SUHS identity.
+                        with the selected SUHS identity.
                     </p>
 
                 </div>
@@ -1579,6 +1666,15 @@ const REGISTRY_API =
     "https://suhs-registry.michaelaroot1987.workers.dev";
 
 /* ============================================================================
+   REQUESTED ROOT DOMAIN
+   ============================================================================ */
+
+const requestedDomain =
+    new URLSearchParams(
+        window.location.search
+    ).get("domain");
+
+/* ============================================================================
    APPLICATION STATE
    ============================================================================ */
 
@@ -1597,6 +1693,9 @@ let profiles =
     [];
 
 let activeDomain =
+    null;
+
+let activeProfile =
     null;
 
 let currentPage =
@@ -1714,6 +1813,32 @@ window.addEventListener(
                 }
             );
 
+        $("profileSelect")
+            .addEventListener(
+                "change",
+                async event => {
+
+                    activeProfile =
+                        profiles.find(
+                            profile =>
+                                String(profile.id) ===
+                                String(event.target.value)
+                        ) || null;
+
+                    renderProfileSelector();
+
+                    populateProfile();
+
+                    if (
+                        $("view-email")
+                            .classList
+                            .contains("active")
+                    ) {
+                        await loadInbox();
+                    }
+                }
+            );
+
         document
             .querySelectorAll(
                 ".nav-button"
@@ -1774,13 +1899,16 @@ window.addEventListener(
             );
 
         if (sessionToken) {
+
             const authenticated =
                 await restoreSession();
 
             if (!authenticated) {
                 showLogin();
             }
+
         } else {
+
             showLogin();
         }
     }
@@ -1876,9 +2004,17 @@ async function handleLogin(event) {
         profiles =
             data.profiles || [];
 
+        selectInitialDomain();
+
+        selectInitialProfile();
+
         showApplication();
 
         populateAccount();
+
+        populateProfiles();
+
+        populateProfile();
 
         await loadDomain();
 
@@ -1936,9 +2072,17 @@ async function restoreSession() {
         profiles =
             data.profiles || [];
 
+        selectInitialDomain();
+
+        selectInitialProfile();
+
         showApplication();
 
         populateAccount();
+
+        populateProfiles();
+
+        populateProfile();
 
         await loadDomain();
 
@@ -1946,6 +2090,84 @@ async function restoreSession() {
 
     } catch {
         return false;
+    }
+}
+
+/* ============================================================================
+   INITIAL DOMAIN SELECTION
+   ============================================================================ */
+
+function selectInitialDomain() {
+
+    if (!domains.length) {
+
+        activeDomain =
+            null;
+
+        return;
+    }
+
+    const requested =
+        requestedDomain
+            ? requestedDomain
+                .trim()
+                .toLowerCase()
+            : "";
+
+    if (requested) {
+
+        activeDomain =
+            domains.find(
+                domain =>
+                    String(
+                        domain.fqdn || ""
+                    )
+                        .toLowerCase() ===
+                    requested
+            ) || null;
+    }
+
+    if (!activeDomain) {
+
+        activeDomain =
+            domains[0];
+    }
+}
+
+/* ============================================================================
+   INITIAL PROFILE SELECTION
+   ============================================================================ */
+
+function selectInitialProfile() {
+
+    if (!profiles.length) {
+
+        activeProfile =
+            null;
+
+        return;
+    }
+
+    const ownProfile =
+        currentAccount &&
+        currentAccount.profile
+            ? currentAccount.profile
+            : null;
+
+    if (ownProfile) {
+
+        activeProfile =
+            profiles.find(
+                profile =>
+                    String(profile.id) ===
+                    String(ownProfile.id)
+            ) || null;
+    }
+
+    if (!activeProfile) {
+
+        activeProfile =
+            profiles[0];
     }
 }
 
@@ -1982,6 +2204,7 @@ function showApplication() {
 async function logout() {
 
     try {
+
         await apiFetch(
             "/api/auth/logout",
             {
@@ -1989,6 +2212,7 @@ async function logout() {
                     "POST"
             }
         );
+
     } catch {
         // Continue with local logout.
     }
@@ -2010,6 +2234,9 @@ async function logout() {
         [];
 
     activeDomain =
+        null;
+
+    activeProfile =
         null;
 
     location.reload();
@@ -2083,12 +2310,131 @@ function populateAccount() {
     );
 
     if (!activeDomain) {
-        activeDomain =
-            domains[0];
+
+        selectInitialDomain();
     }
 
-    select.value =
-        activeDomain.fqdn;
+    if (activeDomain) {
+
+        select.value =
+            activeDomain.fqdn;
+    }
+
+    populateProfiles();
+}
+
+/* ============================================================================
+   PROFILE SELECTOR
+   ============================================================================ */
+
+function populateProfiles() {
+
+    const section =
+        $("profileSelectorSection");
+
+    const select =
+        $("profileSelect");
+
+    select.innerHTML =
+        "";
+
+    if (!profiles.length) {
+
+        section.style.display =
+            "none";
+
+        activeProfile =
+            null;
+
+        $("profileInfo")
+            .textContent =
+            "No profile available.";
+
+        return;
+    }
+
+    section.style.display =
+        "block";
+
+    profiles.forEach(
+        profile => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                profile.id;
+
+            option.textContent =
+                profile.display_name
+                    ? profile.display_name +
+                      " — " +
+                      profile.owner_email
+                    : profile.owner_email;
+
+            select.appendChild(
+                option
+            );
+        }
+    );
+
+    if (!activeProfile) {
+
+        selectInitialProfile();
+    }
+
+    if (activeProfile) {
+
+        select.value =
+            activeProfile.id;
+    }
+
+    renderProfileSelector();
+}
+
+function renderProfileSelector() {
+
+    const profile =
+        activeProfile;
+
+    if (!profile) {
+
+        $("profileInfo")
+            .textContent =
+            "No profile selected.";
+
+        return;
+    }
+
+    $("profileInfo")
+        .innerHTML =
+        `
+            <strong>
+                ${escapeHTML(
+                    profile.display_name ||
+                    profile.owner_email ||
+                    ""
+                )}
+            </strong>
+            <br>
+            ${escapeHTML(
+                profile.owner_email ||
+                ""
+            )}
+            ${
+                profile.username
+                    ? `
+                        <br>
+                        Username:
+                        ${escapeHTML(
+                            profile.username
+                        )}
+                    `
+                    : ""
+            }
+        `;
 }
 
 /* ============================================================================
@@ -2098,6 +2444,15 @@ function populateAccount() {
 async function loadDomain() {
 
     if (!activeDomain) {
+
+        $("domainInfo")
+            .textContent =
+            "No domain selected.";
+
+        $("editorSubtitle")
+            .textContent =
+            "Select a domain to begin.";
+
         return;
     }
 
@@ -2131,13 +2486,7 @@ async function loadDomain() {
 
     populateProfile();
 
-    if (
-        profiles.length
-    ) {
-        $("emailSubtitle")
-            .textContent =
-            `Email for ${profiles[0].owner_email}`;
-    }
+    updateEmailSubtitle();
 }
 
 /* ============================================================================
@@ -2644,6 +2993,7 @@ function previewPage() {
         );
 
     if (!win) {
+
         alert(
             "The browser blocked the preview window."
         );
@@ -2667,16 +3017,34 @@ function previewPage() {
 function populateProfile() {
 
     const profile =
-        currentAccount &&
-        currentAccount.profile
-            ? currentAccount.profile
-            : (
-                profiles.length
-                    ? profiles[0]
-                    : null
-            );
+        activeProfile;
 
     if (!profile) {
+
+        $("profileEmail")
+            .value =
+            "";
+
+        $("profileUsername")
+            .value =
+            "";
+
+        $("profileName")
+            .value =
+            "";
+
+        $("profileAvatar")
+            .value =
+            "";
+
+        $("profileBio")
+            .value =
+            "";
+
+        $("mailFrom")
+            .value =
+            "";
+
         return;
     }
 
@@ -2709,6 +3077,8 @@ function populateProfile() {
         .value =
         profile.owner_email ||
         "";
+
+    updateEmailSubtitle();
 }
 
 /* ============================================================================
@@ -2717,14 +3087,31 @@ function populateProfile() {
 
 async function saveProfile() {
 
+    if (!activeProfile) {
+
+        setStatus(
+            $("profileStatus"),
+            "No profile selected.",
+            "error"
+        );
+
+        return;
+    }
+
     const status =
         $("profileStatus");
+
+    const button =
+        $("saveProfileButton");
 
     setStatus(
         status,
         "Saving profile...",
         "info"
     );
+
+    button.disabled =
+        true;
 
     try {
 
@@ -2737,6 +3124,9 @@ async function saveProfile() {
 
                     body:
                         JSON.stringify({
+                            profile_id:
+                                activeProfile.id,
+
                             display_name:
                                 $("profileName")
                                     .value,
@@ -2756,6 +3146,7 @@ async function saveProfile() {
             await response.json();
 
         if (!response.ok) {
+
             throw new Error(
                 data.message ||
                 data.error ||
@@ -2779,6 +3170,11 @@ async function saveProfile() {
             "Profile update failed.",
             "error"
         );
+
+    } finally {
+
+        button.disabled =
+            false;
     }
 }
 
@@ -2787,6 +3183,11 @@ async function saveProfile() {
    ============================================================================ */
 
 async function refreshAccount() {
+
+    const previousProfileId =
+        activeProfile
+            ? String(activeProfile.id)
+            : null;
 
     const response =
         await apiFetch(
@@ -2809,9 +3210,28 @@ async function refreshAccount() {
     profiles =
         data.profiles || [];
 
+    activeProfile =
+        previousProfileId
+            ? (
+                profiles.find(
+                    profile =>
+                        String(profile.id) ===
+                        previousProfileId
+                ) || null
+            )
+            : null;
+
+    if (!activeProfile) {
+        selectInitialProfile();
+    }
+
     populateAccount();
 
+    populateProfiles();
+
     populateProfile();
+
+    updateEmailSubtitle();
 }
 
 /* ============================================================================
@@ -2820,16 +3240,35 @@ async function refreshAccount() {
 
 function getEmailProfile() {
 
-    if (
-        currentAccount &&
-        currentAccount.profile
-    ) {
-        return currentAccount.profile;
+    return activeProfile ||
+        null;
+}
+
+function updateEmailSubtitle() {
+
+    const profile =
+        getEmailProfile();
+
+    if (!profile) {
+
+        $("emailSubtitle")
+            .textContent =
+            "Select a profile to view its inbox.";
+
+        $("mailFrom")
+            .value =
+            "";
+
+        return;
     }
 
-    return profiles.length
-        ? profiles[0]
-        : null;
+    $("emailSubtitle")
+        .textContent =
+        `Inbox: ${profile.owner_email}`;
+
+    $("mailFrom")
+        .value =
+        profile.owner_email;
 }
 
 /* ============================================================================
@@ -2852,16 +3291,22 @@ async function loadInbox() {
                 </div>
             `;
 
+        $("messageView")
+            .innerHTML =
+            `
+                <h2>
+                    Select a profile
+                </h2>
+
+                <div class="message-meta">
+                    No email profile is currently selected.
+                </div>
+            `;
+
         return;
     }
 
-    $("emailSubtitle")
-        .textContent =
-        `Inbox: ${profile.owner_email}`;
-
-    $("mailFrom")
-        .value =
-        profile.owner_email;
+    updateEmailSubtitle();
 
     try {
 
@@ -2877,6 +3322,7 @@ async function loadInbox() {
             await response.json();
 
         if (!response.ok) {
+
             throw new Error(
                 data.message ||
                 data.error ||
@@ -2887,7 +3333,32 @@ async function loadInbox() {
         messages =
             data.messages || [];
 
+        selectedMessageId =
+            null;
+
         renderMessages();
+
+        $("messageView")
+            .innerHTML =
+            `
+                <h2>
+                    ${escapeHTML(
+                        profile.display_name ||
+                        profile.owner_email
+                    )}
+                </h2>
+
+                <div class="message-meta">
+                    Inbox:
+                    ${escapeHTML(
+                        profile.owner_email
+                    )}
+                </div>
+
+                <div class="message-body">
+                    Select a message from the inbox.
+                </div>
+            `;
 
     } catch (e) {
 
@@ -3051,9 +3522,32 @@ function showMessage(
 
 function openCompose() {
 
+    const profile =
+        getEmailProfile();
+
+    if (!profile) {
+
+        setStatus(
+            $("mailStatus"),
+            "No profile selected.",
+            "error"
+        );
+
+        $("composeCard")
+            .style.display =
+            "block";
+
+        return;
+    }
+
     $("composeCard")
         .style.display =
         "block";
+
+    $("mailFrom")
+        .value =
+        profile.owner_email ||
+        "";
 
     $("mailRecipient")
         .focus();
@@ -3096,6 +3590,13 @@ async function sendMail() {
         getEmailProfile();
 
     if (!profile) {
+
+        setStatus(
+            $("mailStatus"),
+            "No profile selected.",
+            "error"
+        );
+
         return;
     }
 
@@ -3180,6 +3681,7 @@ async function sendMail() {
             await response.json();
 
         if (!response.ok) {
+
             throw new Error(
                 data.message ||
                 data.error ||
@@ -3264,6 +3766,7 @@ function showView(
         view ===
         "email"
     ) {
+
         loadInbox();
     }
 
@@ -3271,6 +3774,7 @@ function showView(
         view ===
         "profile"
     ) {
+
         populateProfile();
     }
 }
