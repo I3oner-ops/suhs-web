@@ -1,603 +1,3349 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUHS — .root Website Customizer</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #080b10; color: #ffffff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+<meta charset="UTF-8">
 
-        /* Navigation & Header */
-        header { padding: 12px 24px; background: #0d1118; border-bottom: 1px solid #222831; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; }
-        .header-actions { display: flex; gap: 12px; align-items: center; }
-        .user-badge { font-size: 13px; color: #4ade80; background: #161b22; padding: 6px 12px; border-radius: 6px; border: 1px solid #222831; display: none; }
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-        /* Buttons */
-        .btn { padding: 8px 16px; background: #222831; color: #fff; border: 1px solid #323a45; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; }
-        .btn:hover { background: #323a45; }
-        .btn-primary { background: #ffffff; color: #080b10; border: none; }
-        .btn-primary:hover { background: #e2e8f0; }
-        .btn-accent { background: #3b82f6; color: #fff; border: none; }
-        .btn-accent:hover { background: #2563eb; }
+<title>SUHS — .root Control Center</title>
 
-        /* Workspace Grid */
-        .workspace { display: flex; flex: 1; overflow: hidden; filter: blur(4px); pointer-events: none; transition: filter 0.3s ease; }
-        .workspace.authenticated { filter: none; pointer-events: all; }
+<style>
 
-        /* Left Toolbar */
-        .toolbar { width: 260px; background: #0d1118; border-right: 1px solid #222831; padding: 16px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-        .tool-group { display: flex; flex-direction: column; gap: 8px; }
-        .tool-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #78818f; font-weight: 700; }
-        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+* {
+    box-sizing: border-box;
+}
 
-        /* Controls & Form Inputs */
-        input[type="text"], input[type="email"], input[type="password"], input[type="color"], select { width: 100%; padding: 10px; background: #161b22; border: 1px solid #222831; border-radius: 6px; color: #fff; font-size: 13px; }
-        input:focus { outline: none; border-color: #3b82f6; }
-        .file-upload-btn { display: block; text-align: center; padding: 10px; background: #161b22; border: 1px dashed #323a45; border-radius: 6px; cursor: pointer; font-size: 12px; color: #aeb7c4; }
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
 
-        /* Canvas Area */
-        .main-stage { flex: 1; display: flex; flex-direction: column; background: #05070a; position: relative; }
-        
-        /* Page Tab Bar */
-        .tab-bar { background: #0d1118; border-bottom: 1px solid #222831; display: flex; align-items: center; padding: 0 16px; gap: 4px; overflow-x: auto; }
-        .tab { padding: 10px 18px; font-size: 13px; color: #78818f; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .tab.active { color: #ffffff; border-bottom-color: #3b82f6; background: #161b22; }
-        .add-tab-btn { padding: 6px 12px; background: #161b22; border: 1px solid #222831; color: #4ade80; border-radius: 4px; cursor: pointer; font-size: 14px; margin-left: 8px; }
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
 
-        /* Interactive Canvas */
-        .canvas-container { flex: 1; padding: 40px; overflow: auto; display: flex; justify-content: center; align-items: flex-start; }
-        .canvas { width: 1000px; min-height: 650px; background: #0d1118; border: 1px solid #222831; border-radius: 8px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; background-size: cover; background-position: center; }
+    background: #080b10;
+    color: #ffffff;
+}
 
-        /* Dynamic Canvas Elements */
-        .canvas-element { position: absolute; min-width: 80px; min-height: 30px; padding: 8px; cursor: move; border: 1px solid transparent; user-select: none; box-sizing: border-box; }
-        .canvas-element.selected { border: 1px dashed #3b82f6; outline: 1px solid #3b82f6; }
-        .canvas-element[data-type="button"] { background: #3b82f6; color: #fff; border-radius: 6px; text-align: center; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .canvas-element[data-type="text"] { color: #ffffff; font-size: 16px; }
-        .canvas-element img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* ========================================================================== */
+/* APP                                                                        */
+/* ========================================================================== */
 
-        /* HTML Code View Editor */
-        .code-editor { position: absolute; top: 41px; left: 0; right: 0; bottom: 0; width: 100%; height: calc(100% - 41px); background: #0d1118; color: #4ade80; font-family: monospace; font-size: 14px; padding: 20px; border: none; outline: none; resize: none; display: none; z-index: 10; }
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        /* Modal Overlays */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal { background: #0d1118; border: 1px solid #222831; border-radius: 12px; padding: 32px; width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .modal h3 { margin-top: 0; font-size: 22px; }
-        .modal p { color: #aeb7c4; font-size: 14px; line-height: 1.5; }
-        .auth-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
-    </style>
+/* ========================================================================== */
+/* HEADER                                                                     */
+/* ========================================================================== */
+
+.header {
+    height: 64px;
+    padding: 0 20px;
+
+    background: #0d1118;
+    border-bottom: 1px solid #222831;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.logo span {
+    color: #3b82f6;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-label {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+/* ========================================================================== */
+/* BUTTONS                                                                    */
+/* ========================================================================== */
+
+button {
+    font-family: inherit;
+}
+
+.btn {
+    border: 1px solid #323a45;
+    background: #222831;
+    color: #ffffff;
+
+    border-radius: 6px;
+
+    padding: 9px 14px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #323a45;
+}
+
+.btn-primary {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-danger {
+    background: #7f1d1d;
+    border-color: #991b1b;
+}
+
+.btn-danger:hover {
+    background: #991b1b;
+}
+
+/* ========================================================================== */
+/* LOGIN                                                                      */
+/* ========================================================================== */
+
+.login-screen {
+    position: fixed;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #111827 0%,
+            #080b10 65%
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1000;
+
+    padding: 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 430px;
+
+    background: #0d1118;
+
+    border: 1px solid #222831;
+
+    border-radius: 14px;
+
+    padding: 34px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, .65);
+}
+
+.login-card h1 {
+    margin:
+        0 0 8px;
+
+    font-size: 25px;
+}
+
+.login-card p {
+    color: #94a3b8;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.login-form {
+    margin-top: 26px;
+}
+
+.field {
+    margin-bottom: 16px;
+}
+
+.field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #aeb7c4;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+
+    background: #161b22;
+
+    color: #ffffff;
+
+    border: 1px solid #2b3440;
+
+    border-radius: 7px;
+
+    padding: 11px;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+.field textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: #3b82f6;
+}
+
+.login-submit {
+    width: 100%;
+
+    padding: 13px;
+
+    margin-top: 4px;
+}
+
+.login-error {
+    display: none;
+
+    margin-top: 14px;
+
+    padding: 10px;
+
+    background: #3f1212;
+
+    border: 1px solid #7f1d1d;
+
+    border-radius: 7px;
+
+    color: #fca5a5;
+
+    font-size: 13px;
+}
+
+/* ========================================================================== */
+/* MAIN LAYOUT                                                                */
+/* ========================================================================== */
+
+.main {
+    flex: 1;
+
+    display: flex;
+
+    min-height:
+        calc(100vh - 64px);
+}
+
+/* ========================================================================== */
+/* SIDEBAR                                                                    */
+/* ========================================================================== */
+
+.sidebar {
+    width: 270px;
+
+    background: #0d1118;
+
+    border-right: 1px solid #222831;
+
+    padding: 16px;
+
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    margin-bottom: 25px;
+}
+
+.sidebar-title {
+    margin-bottom: 9px;
+
+    color: #78818f;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.domain-select {
+    width: 100%;
+
+    padding: 10px;
+
+    background: #161b22;
+
+    color: #ffffff;
+
+    border: 1px solid #2b3440;
+
+    border-radius: 6px;
+}
+
+.nav-button {
+    width: 100%;
+
+    display: block;
+
+    text-align: left;
+
+    margin-bottom: 6px;
+
+    background: transparent;
+
+    border: 1px solid transparent;
+
+    color: #94a3b8;
+
+    padding: 10px 11px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: 700;
+
+    font-size: 13px;
+}
+
+.nav-button:hover {
+    background: #161b22;
+    color: #ffffff;
+}
+
+.nav-button.active {
+    background: #172033;
+    border-color: #243b5a;
+    color: #ffffff;
+}
+
+.domain-info {
+    margin-top: 10px;
+
+    padding: 10px;
+
+    border-radius: 7px;
+
+    background: #111827;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+/* ========================================================================== */
+/* CONTENT                                                                    */
+/* ========================================================================== */
+
+.content {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 22px;
+
+    overflow-y: auto;
+}
+
+.view {
+    display: none;
+}
+
+.view.active {
+    display: block;
+}
+
+.view-header {
+    margin-bottom: 20px;
+}
+
+.view-header h1 {
+    margin:
+        0 0 6px;
+
+    font-size: 24px;
+}
+
+.view-header p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+/* ========================================================================== */
+/* CARDS                                                                      */
+/* ========================================================================== */
+
+.card {
+    background: #0d1118;
+
+    border: 1px solid #222831;
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    margin-bottom: 18px;
+}
+
+.card-title {
+    margin:
+        0 0 14px;
+
+    font-size: 15px;
+}
+
+.card-description {
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+/* ========================================================================== */
+/* SITE EDITOR                                                                */
+/* ========================================================================== */
+
+.editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    padding: 9px;
+
+    background: #111827;
+
+    border: 1px solid #222831;
+    border-bottom: 0;
+
+    border-radius:
+        8px 8px 0 0;
+}
+
+.editor-toolbar button,
+.editor-toolbar select {
+    background: #1e293b;
+    color: #ffffff;
+
+    border: 1px solid #334155;
+
+    border-radius: 5px;
+
+    min-height: 34px;
+
+    padding: 6px 9px;
+
+    cursor: pointer;
+
+    font-weight: 700;
+}
+
+.editor-toolbar button:hover {
+    background: #334155;
+}
+
+.editor-toolbar .separator {
+    width: 1px;
+    background: #334155;
+    margin: 2px 3px;
+}
+
+.editor {
+    min-height: 580px;
+
+    padding: 35px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    outline: none;
+
+    border: 1px solid #222831;
+
+    border-radius:
+        0 0 8px 8px;
+
+    line-height: 1.6;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 16px;
+
+    overflow-wrap: anywhere;
+}
+
+.editor:focus {
+    box-shadow:
+        inset 0 0 0 2px #2563eb;
+}
+
+.editor img {
+    max-width: 100%;
+    height: auto;
+}
+
+.editor-source {
+    display: none;
+
+    width: 100%;
+
+    min-height: 580px;
+
+    resize: vertical;
+
+    padding: 20px;
+
+    background: #020617;
+
+    color: #dbeafe;
+
+    border: 1px solid #222831;
+
+    border-radius:
+        0 0 8px 8px;
+
+    outline: none;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+    font-size: 14px;
+
+    line-height: 1.55;
+}
+
+.editor-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+/* ========================================================================== */
+/* STATUS                                                                     */
+/* ========================================================================== */
+
+.status {
+    margin-top: 12px;
+
+    padding: 10px;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    display: none;
+}
+
+.status.success {
+    display: block;
+
+    color: #86efac;
+
+    background: #052e16;
+
+    border: 1px solid #166534;
+}
+
+.status.error {
+    display: block;
+
+    color: #fca5a5;
+
+    background: #450a0a;
+
+    border: 1px solid #991b1b;
+}
+
+.status.info {
+    display: block;
+
+    color: #93c5fd;
+
+    background: #172554;
+
+    border: 1px solid #1d4ed8;
+}
+
+/* ========================================================================== */
+/* TABS                                                                       */
+/* ========================================================================== */
+
+.page-tabs {
+    display: flex;
+
+    gap: 5px;
+
+    overflow-x: auto;
+
+    margin-bottom: 12px;
+}
+
+.page-tab {
+    white-space: nowrap;
+
+    padding: 8px 13px;
+
+    background: #161b22;
+
+    color: #94a3b8;
+
+    border:
+        1px solid #222831;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.page-tab.active {
+    color: #ffffff;
+
+    background: #172033;
+
+    border-color: #2563eb;
+}
+
+/* ========================================================================== */
+/* PROFILE                                                                    */
+/* ========================================================================== */
+
+.profile-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 15px;
+}
+
+.profile-grid .full {
+    grid-column: 1 / -1;
+}
+
+/* ========================================================================== */
+/* EMAIL                                                                      */
+/* ========================================================================== */
+
+.mail-layout {
+    display: grid;
+
+    grid-template-columns:
+        330px
+        minmax(0, 1fr);
+
+    gap: 15px;
+
+    min-height: 600px;
+}
+
+.message-list {
+    background: #0d1118;
+
+    border: 1px solid #222831;
+
+    border-radius: 9px;
+
+    overflow-y: auto;
+}
+
+.message-row {
+    padding: 13px;
+
+    border-bottom: 1px solid #222831;
+
+    cursor: pointer;
+}
+
+.message-row:hover {
+    background: #161b22;
+}
+
+.message-row.active {
+    background: #172033;
+}
+
+.message-sender {
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.message-subject {
+    color: #cbd5e1;
+
+    font-size: 12px;
+
+    margin-top: 3px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.message-date {
+    color: #64748b;
+
+    font-size: 10px;
+
+    margin-top: 5px;
+}
+
+.message-view {
+    background: #0d1118;
+
+    border: 1px solid #222831;
+
+    border-radius: 9px;
+
+    padding: 18px;
+
+    overflow-y: auto;
+}
+
+.message-view h2 {
+    margin-top: 0;
+
+    font-size: 18px;
+}
+
+.message-meta {
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    margin-bottom: 20px;
+
+    line-height: 1.5;
+}
+
+.message-body {
+    white-space: pre-wrap;
+
+    color: #dbeafe;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+
+    overflow-wrap: anywhere;
+}
+
+/* ========================================================================== */
+/* RESPONSIVE                                                                 */
+/* ========================================================================== */
+
+@media (
+    max-width: 850px
+) {
+    .sidebar {
+        width: 210px;
+    }
+
+    .mail-layout {
+        grid-template-columns:
+            1fr;
+    }
+
+    .message-list {
+        max-height: 300px;
+    }
+
+    .profile-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+    .profile-grid .full {
+        grid-column: auto;
+    }
+}
+
+@media (
+    max-width: 650px
+) {
+    .header {
+        padding: 0 10px;
+    }
+
+    .user-label {
+        display: none;
+    }
+
+    .main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid #222831;
+    }
+
+    .content {
+        padding: 12px;
+    }
+
+    .editor {
+        padding: 20px;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo">SUHS <span style="font-size: 12px; color: #3b82f6; font-weight: 400;">.root editor</span></div>
-    <div class="header-actions">
-        <div class="user-badge" id="userBadge">Domain: <strong id="activeDomainDisplay">--</strong></div>
-        <button class="btn" id="toggleModeBtn" onclick="toggleViewMode()">HTML Code Mode</button>
-        <button class="btn btn-accent" onclick="saveAndPublish()">Publish to SUHS</button>
-        <button class="btn" id="logoutBtn" style="display: none;" onclick="logout()">Log Out</button>
-    </div>
-</header>
+<!-- ======================================================================== -->
+<!-- LOGIN                                                                    -->
+<!-- ======================================================================== -->
 
-<!-- Authentication Modal -->
-<div class="modal-overlay" id="loginModal">
-    <div class="modal">
-        <h3>.root Access Portal</h3>
-        <p>Log in with your registered owner email and admin password to edit your .suhs site environment.</p>
+<div
+    class="login-screen"
+    id="loginScreen"
+>
 
-        <form id="loginForm" onsubmit="handleLogin(event)" style="text-align: left; margin-top: 20px;">
-            <label style="font-size: 11px; text-transform: uppercase; color: #78818f; font-weight: 700;">Owner Email</label>
-            <input type="email" id="loginEmail" placeholder="your email" required style="margin-bottom: 16px; margin-top: 4px;">
+    <div class="login-card">
 
-            <label style="font-size: 11px; text-transform: uppercase; color: #78818f; font-weight: 700;">Password</label>
-            <input type="password" id="loginPassword" placeholder="your password" required style="margin-bottom: 20px; margin-top: 4px;">
+        <h1>
+            SUHS <span style="color:#3b82f6;">.root</span>
+        </h1>
 
-            <button type="submit" class="btn btn-accent" id="loginSubmitBtn" style="width: 100%; padding: 12px;">Authenticate & Open Workspace</button>
+        <p>
+            Sign in to access your SUHS domains,
+            website editor, profile and SUHS email.
+        </p>
+
+        <form
+            class="login-form"
+            id="loginForm"
+        >
+
+            <div class="field">
+
+                <label>
+                    Email or Username
+                </label>
+
+                <input
+                    id="loginIdentifier"
+                    type="text"
+                    autocomplete="username"
+                    placeholder="you@example.com"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Password"
+                    required
+                >
+
+            </div>
+
+            <button
+                class="btn btn-primary login-submit"
+                id="loginButton"
+                type="submit"
+            >
+                Sign In
+            </button>
+
         </form>
 
-        <div class="auth-error" id="authError">Invalid email or password. Please try again.</div>
+        <div
+            class="login-error"
+            id="loginError"
+        ></div>
+
     </div>
+
 </div>
 
-<div class="workspace" id="workspace">
-    <!-- Left Inspector & Tool Palette -->
-    <div class="toolbar" id="toolbar">
-        <div class="tool-group">
-            <label>Add Elements</label>
-            <div class="tool-grid">
-                <button class="btn" onclick="addElement('text')">+ Text</button>
-                <button class="btn" onclick="addElement('button')">+ Button</button>
-                <button class="btn" onclick="triggerImageUpload()">+ Image</button>
-                <button class="btn" onclick="addElement('box')">+ Container</button>
-            </div>
-            <input type="file" id="imageUploader" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+<!-- ======================================================================== -->
+<!-- APPLICATION                                                              -->
+<!-- ======================================================================== -->
+
+<div
+    class="app"
+    id="app"
+    style="display:none;"
+>
+
+    <header class="header">
+
+        <div class="logo">
+            SUHS
+            <span>.root CONTROL CENTER</span>
         </div>
 
-        <div class="tool-group">
-            <label>Canvas Background</label>
-            <label class="file-upload-btn">
-                Upload Background
-                <input type="file" accept="image/*" style="display: none;" onchange="handleCanvasBgUpload(event)">
-            </label>
-            <input type="color" id="canvasBgColor" value="#0d1118" onchange="updateCanvasBgColor(this.value)">
+        <div class="header-right">
+
+            <span
+                class="user-label"
+                id="userLabel"
+            ></span>
+
+            <button
+                class="btn"
+                id="logoutButton"
+            >
+                Log Out
+            </button>
+
         </div>
 
-        <div class="tool-group" id="elementInspector" style="display: none;">
-            <label>Element Inspector</label>
-            <label style="font-size: 11px; color: #aeb7c4;">Text / Label</label>
-            <input type="text" id="inspectorText" oninput="updateSelectedElementText(this.value)">
+    </header>
 
-            <div class="tool-grid" style="margin-top: 8px;">
-                <div>
-                    <label style="font-size: 10px; color: #aeb7c4;">Text Color</label>
-                    <input type="color" id="inspectorTextColor" onchange="updateSelectedStyle('color', this.value)">
+    <main class="main">
+
+        <!-- ================================================================= -->
+        <!-- SIDEBAR                                                           -->
+        <!-- ================================================================= -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-section">
+
+                <div class="sidebar-title">
+                    Active Domain
                 </div>
-                <div>
-                    <label style="font-size: 10px; color: #aeb7c4;">BG Color</label>
-                    <input type="color" id="inspectorBgColor" onchange="updateSelectedStyle('backgroundColor', this.value)">
+
+                <select
+                    class="domain-select"
+                    id="domainSelect"
+                ></select>
+
+                <div
+                    class="domain-info"
+                    id="domainInfo"
+                ></div>
+
+            </div>
+
+            <div class="sidebar-section">
+
+                <div class="sidebar-title">
+                    Control Center
                 </div>
+
+                <button
+                    class="nav-button active"
+                    data-view="editor"
+                >
+                    Website Editor
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-view="profile"
+                >
+                    Profile
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-view="email"
+                >
+                    Email
+                </button>
+
             </div>
 
-            <div style="margin-top: 8px;">
-                <label style="font-size: 10px; color: #aeb7c4;">Font Size (px)</label>
-                <input type="text" id="inspectorFontSize" placeholder="16" oninput="updateSelectedStyle('fontSize', this.value + 'px')">
+        </aside>
+
+        <!-- ================================================================= -->
+        <!-- CONTENT                                                           -->
+        <!-- ================================================================= -->
+
+        <section class="content">
+
+            <!-- ============================================================= -->
+            <!-- WEBSITE EDITOR                                                -->
+            <!-- ============================================================= -->
+
+            <div
+                class="view active"
+                id="view-editor"
+            >
+
+                <div class="view-header">
+
+                    <h1>
+                        Website Editor
+                    </h1>
+
+                    <p id="editorSubtitle">
+                        Select a domain to begin.
+                    </p>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="page-tabs" id="pageTabs"></div>
+
+                    <div class="field">
+
+                        <label>
+                            Page File
+                        </label>
+
+                        <input
+                            id="pageKey"
+                            type="text"
+                            value="index.html"
+                            placeholder="index.html"
+                        >
+
+                    </div>
+
+                    <div class="editor-toolbar">
+
+                        <button
+                            type="button"
+                            onclick="execEditor('undo')"
+                        >
+                            ↶
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="execEditor('redo')"
+                        >
+                            ↷
+                        </button>
+
+                        <span class="separator"></span>
+
+                        <select
+                            onchange="
+                                if(this.value)
+                                execEditor('formatBlock', this.value);
+                                this.value='';
+                            "
+                        >
+
+                            <option value="">
+                                Style
+                            </option>
+
+                            <option value="p">
+                                Paragraph
+                            </option>
+
+                            <option value="h1">
+                                H1
+                            </option>
+
+                            <option value="h2">
+                                H2
+                            </option>
+
+                            <option value="h3">
+                                H3
+                            </option>
+
+                            <option value="blockquote">
+                                Quote
+                            </option>
+
+                        </select>
+
+                        <span class="separator"></span>
+
+                        <button
+                            type="button"
+                            onclick="execEditor('bold')"
+                        >
+                            <strong>B</strong>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="execEditor('italic')"
+                        >
+                            <em>I</em>
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="execEditor('underline')"
+                        >
+                            <u>U</u>
+                        </button>
+
+                        <span class="separator"></span>
+
+                        <button
+                            type="button"
+                            onclick="
+                                execEditor(
+                                    'insertUnorderedList'
+                                )
+                            "
+                        >
+                            • List
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="
+                                execEditor(
+                                    'insertOrderedList'
+                                )
+                            "
+                        >
+                            1. List
+                        </button>
+
+                        <span class="separator"></span>
+
+                        <button
+                            type="button"
+                            onclick="
+                                execEditor(
+                                    'justifyLeft'
+                                )
+                            "
+                        >
+                            Left
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="
+                                execEditor(
+                                    'justifyCenter'
+                                )
+                            "
+                        >
+                            Center
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="
+                                execEditor(
+                                    'justifyRight'
+                                )
+                            "
+                        >
+                            Right
+                        </button>
+
+                        <span class="separator"></span>
+
+                        <button
+                            type="button"
+                            onclick="insertLink()"
+                        >
+                            Link
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="insertImage()"
+                        >
+                            Image
+                        </button>
+
+                        <span class="separator"></span>
+
+                        <button
+                            type="button"
+                            id="sourceToggle"
+                            onclick="toggleSourceMode()"
+                        >
+                            HTML
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="visualEditor"
+                        class="editor"
+                        contenteditable="true"
+                        spellcheck="true"
+                    ></div>
+
+                    <textarea
+                        id="sourceEditor"
+                        class="editor-source"
+                        spellcheck="false"
+                    ></textarea>
+
+                    <div class="editor-actions">
+
+                        <button
+                            class="btn btn-primary"
+                            id="publishButton"
+                        >
+                            Publish to SUHS
+                        </button>
+
+                        <button
+                            class="btn"
+                            id="previewButton"
+                        >
+                            Preview
+                        </button>
+
+                    </div>
+
+                    <div
+                        class="status"
+                        id="editorStatus"
+                    ></div>
+
+                </div>
+
             </div>
 
-            <button class="btn" style="background: #ef4444; color: #fff; margin-top: 12px;" onclick="deleteSelectedElement()">Delete Element</button>
-        </div>
-    </div>
+            <!-- ============================================================= -->
+            <!-- PROFILE                                                        -->
+            <!-- ============================================================= -->
 
-    <!-- Center Stage -->
-    <div class="main-stage">
-        <!-- Tab Bar -->
-        <div class="tab-bar" id="tabBar">
-            <button class="tab active" data-page="home" onclick="switchTab('home', this)">Page 1 (Home)</button>
-            <button class="add-tab-btn" onclick="handleNewPageRequest()">+ Tab</button>
-        </div>
+            <div
+                class="view"
+                id="view-profile"
+            >
 
-        <!-- Visual Canvas -->
-        <div class="canvas-container" id="canvasContainer">
-            <div class="canvas" id="canvas" onclick="deselectElements(event)"></div>
-        </div>
+                <div class="view-header">
 
-        <!-- Raw HTML Source Editor -->
-        <textarea class="code-editor" id="codeEditor" spellcheck="false"></textarea>
-    </div>
-</div>
+                    <h1>
+                        Profile
+                    </h1>
 
-<!-- Paywall Modal -->
-<div class="modal-overlay" id="paymentModal" style="display: none;">
-    <div class="modal">
-        <h3>SUHS Pro Tier Required</h3>
-        <p>The free registry tier includes up to 3 customizable sub-pages. Upgrade your namespace to add unlimited pages, custom domain routing, and enhanced media storage.</p>
-        <button class="btn btn-accent" style="width: 100%; margin-top: 16px; padding: 12px;" onclick="resolvePayment()">Upgrade Namespace ($5/mo)</button>
-        <button class="btn" style="width: 100%; margin-top: 8px;" onclick="closeModal('paymentModal')">Close</button>
-    </div>
+                    <p>
+                        Manage the public profile associated
+                        with your SUHS identity.
+                    </p>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="profile-grid">
+
+                        <div class="field">
+
+                            <label>
+                                SUHS Email
+                            </label>
+
+                            <input
+                                id="profileEmail"
+                                type="text"
+                                readonly
+                            >
+
+                        </div>
+
+                        <div class="field">
+
+                            <label>
+                                Username
+                            </label>
+
+                            <input
+                                id="profileUsername"
+                                type="text"
+                                readonly
+                            >
+
+                        </div>
+
+                        <div class="field">
+
+                            <label>
+                                Display Name
+                            </label>
+
+                            <input
+                                id="profileName"
+                                type="text"
+                            >
+
+                        </div>
+
+                        <div class="field">
+
+                            <label>
+                                Avatar URL
+                            </label>
+
+                            <input
+                                id="profileAvatar"
+                                type="url"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+                        <div class="field full">
+
+                            <label>
+                                Bio
+                            </label>
+
+                            <textarea
+                                id="profileBio"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="btn btn-primary"
+                        id="saveProfileButton"
+                    >
+                        Save Profile
+                    </button>
+
+                    <div
+                        class="status"
+                        id="profileStatus"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- EMAIL                                                          -->
+            <!-- ============================================================= -->
+
+            <div
+                class="view"
+                id="view-email"
+            >
+
+                <div class="view-header">
+
+                    <h1>
+                        SUHS Email
+                    </h1>
+
+                    <p id="emailSubtitle">
+                        Select a profile to view its inbox.
+                    </p>
+
+                </div>
+
+                <div class="mail-layout">
+
+                    <div class="message-list">
+
+                        <div
+                            style="
+                                padding:14px;
+                                border-bottom:1px solid #222831;
+                            "
+                        >
+
+                            <button
+                                class="btn btn-primary"
+                                style="width:100%;"
+                                id="composeButton"
+                            >
+                                Compose
+                            </button>
+
+                        </div>
+
+                        <div id="messageList"></div>
+
+                    </div>
+
+                    <div
+                        class="message-view"
+                        id="messageView"
+                    >
+
+                        <h2>
+                            Select a message
+                        </h2>
+
+                        <div class="message-meta">
+                            Your SUHS inbox will appear here.
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="card"
+                    id="composeCard"
+                    style="display:none; margin-top:15px;"
+                >
+
+                    <h2 class="card-title">
+                        Compose SUHS Email
+                    </h2>
+
+                    <div class="field">
+
+                        <label>
+                            From
+                        </label>
+
+                        <input
+                            id="mailFrom"
+                            type="text"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+                            Recipient
+                        </label>
+
+                        <input
+                            id="mailRecipient"
+                            type="email"
+                            placeholder="recipient@example.com"
+                        >
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+                            Subject
+                        </label>
+
+                        <input
+                            id="mailSubject"
+                            type="text"
+                            placeholder="Subject"
+                        >
+
+                    </div>
+
+                    <div class="field">
+
+                        <label>
+                            Message
+                        </label>
+
+                        <textarea
+                            id="mailBody"
+                            style="min-height:220px;"
+                        ></textarea>
+
+                    </div>
+
+                    <div
+                        style="
+                            display:flex;
+                            gap:10px;
+                        "
+                    >
+
+                        <button
+                            class="btn btn-primary"
+                            id="sendMailButton"
+                        >
+                            Send
+                        </button>
+
+                        <button
+                            class="btn"
+                            id="cancelComposeButton"
+                        >
+                            Cancel
+                        </button>
+
+                    </div>
+
+                    <div
+                        class="status"
+                        id="mailStatus"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
 <script>
-    const REGISTRY_API = "https://suhs-registry.michaelaroot1987.workers.dev";
-    
-    // Application State
-    let authToken = null;
-    let activeDomain = null;
-    let pageCount = 1;
-    let isPaidTier = false;
-    let currentPage = 'home';
-    let selectedElement = null;
-    let viewMode = 'visual'; // 'visual' | 'code'
 
-    let siteData = {
-        home: { background: '#0d1118', bgImage: '', elements: [] }
+/* ============================================================================
+   CONFIGURATION
+   ============================================================================ */
+
+const REGISTRY_API =
+    "https://suhs-registry.michaelaroot1987.workers.dev";
+
+/* ============================================================================
+   APPLICATION STATE
+   ============================================================================ */
+
+let sessionToken =
+    sessionStorage.getItem(
+        "suhs_session"
+    ) || null;
+
+let currentAccount =
+    null;
+
+let domains =
+    [];
+
+let profiles =
+    [];
+
+let activeDomain =
+    null;
+
+let currentPage =
+    "index.html";
+
+let sitePages =
+    [];
+
+let sourceMode =
+    false;
+
+let messages =
+    [];
+
+let selectedMessageId =
+    null;
+
+/* ============================================================================
+   DOM HELPERS
+   ============================================================================ */
+
+function $(id) {
+    return document.getElementById(id);
+}
+
+function setStatus(
+    element,
+    message,
+    type
+) {
+    element.className =
+        "status " +
+        type;
+
+    element.textContent =
+        message;
+}
+
+function clearStatus(element) {
+    element.className =
+        "status";
+
+    element.textContent =
+        "";
+}
+
+/* ============================================================================
+   AUTH REQUEST
+   ============================================================================ */
+
+async function apiFetch(
+    path,
+    options = {}
+) {
+    const headers =
+        new Headers(
+            options.headers || {}
+        );
+
+    headers.set(
+        "Content-Type",
+        "application/json"
+    );
+
+    if (sessionToken) {
+        headers.set(
+            "Authorization",
+            "Bearer " +
+            sessionToken
+        );
+    }
+
+    return fetch(
+        REGISTRY_API + path,
+        {
+            ...options,
+            headers
+        }
+    );
+}
+
+/* ============================================================================
+   INITIALIZATION
+   ============================================================================ */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        $("loginForm")
+            .addEventListener(
+                "submit",
+                handleLogin
+            );
+
+        $("logoutButton")
+            .addEventListener(
+                "click",
+                logout
+            );
+
+        $("domainSelect")
+            .addEventListener(
+                "change",
+                async event => {
+
+                    activeDomain =
+                        domains.find(
+                            d =>
+                                d.fqdn ===
+                                event.target.value
+                        ) || null;
+
+                    await loadDomain();
+                }
+            );
+
+        document
+            .querySelectorAll(
+                ".nav-button"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        showView(
+                            button.dataset.view
+                        );
+                    }
+                );
+            });
+
+        $("publishButton")
+            .addEventListener(
+                "click",
+                publishCurrentPage
+            );
+
+        $("previewButton")
+            .addEventListener(
+                "click",
+                previewPage
+            );
+
+        $("saveProfileButton")
+            .addEventListener(
+                "click",
+                saveProfile
+            );
+
+        $("composeButton")
+            .addEventListener(
+                "click",
+                openCompose
+            );
+
+        $("cancelComposeButton")
+            .addEventListener(
+                "click",
+                closeCompose
+            );
+
+        $("sendMailButton")
+            .addEventListener(
+                "click",
+                sendMail
+            );
+
+        $("visualEditor")
+            .addEventListener(
+                "input",
+                syncSource
+            );
+
+        if (sessionToken) {
+            const authenticated =
+                await restoreSession();
+
+            if (!authenticated) {
+                showLogin();
+            }
+        } else {
+            showLogin();
+        }
+    }
+);
+
+/* ============================================================================
+   LOGIN
+   ============================================================================ */
+
+async function handleLogin(event) {
+
+    event.preventDefault();
+
+    const identifier =
+        $("loginIdentifier")
+            .value
+            .trim();
+
+    const password =
+        $("loginPassword")
+            .value;
+
+    const button =
+        $("loginButton");
+
+    const error =
+        $("loginError");
+
+    error.style.display =
+        "none";
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Signing In...";
+
+    try {
+
+        const response =
+            await fetch(
+                REGISTRY_API +
+                "/api/auth/login",
+                {
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            loginIdentifier:
+                                identifier,
+
+                            password:
+                                password
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success ||
+            !data.token
+        ) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Authentication failed."
+            );
+        }
+
+        sessionToken =
+            data.token;
+
+        sessionStorage.setItem(
+            "suhs_session",
+            sessionToken
+        );
+
+        currentAccount =
+            data;
+
+        domains =
+            data.domains || [];
+
+        profiles =
+            data.profiles || [];
+
+        showApplication();
+
+        populateAccount();
+
+        await loadDomain();
+
+    } catch (e) {
+
+        error.textContent =
+            e.message ||
+            "Unable to authenticate.";
+
+        error.style.display =
+            "block";
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Sign In";
+    }
+}
+
+/* ============================================================================
+   SESSION RESTORATION
+   ============================================================================ */
+
+async function restoreSession() {
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/api/auth/me"
+            );
+
+        if (!response.ok) {
+            return false;
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            !data.authenticated
+        ) {
+            return false;
+        }
+
+        currentAccount =
+            data;
+
+        domains =
+            data.domains || [];
+
+        profiles =
+            data.profiles || [];
+
+        showApplication();
+
+        populateAccount();
+
+        await loadDomain();
+
+        return true;
+
+    } catch {
+        return false;
+    }
+}
+
+/* ============================================================================
+   SHOW / HIDE APPLICATION
+   ============================================================================ */
+
+function showLogin() {
+
+    $("loginScreen")
+        .style.display =
+        "flex";
+
+    $("app")
+        .style.display =
+        "none";
+}
+
+function showApplication() {
+
+    $("loginScreen")
+        .style.display =
+        "none";
+
+    $("app")
+        .style.display =
+        "flex";
+}
+
+/* ============================================================================
+   LOGOUT
+   ============================================================================ */
+
+async function logout() {
+
+    try {
+        await apiFetch(
+            "/api/auth/logout",
+            {
+                method:
+                    "POST"
+            }
+        );
+    } catch {
+        // Continue with local logout.
+    }
+
+    sessionToken =
+        null;
+
+    sessionStorage.removeItem(
+        "suhs_session"
+    );
+
+    currentAccount =
+        null;
+
+    domains =
+        [];
+
+    profiles =
+        [];
+
+    activeDomain =
+        null;
+
+    location.reload();
+}
+
+/* ============================================================================
+   ACCOUNT UI
+   ============================================================================ */
+
+function populateAccount() {
+
+    const user =
+        currentAccount &&
+        currentAccount.user
+            ? currentAccount.user
+            : null;
+
+    if (user) {
+
+        $("userLabel")
+            .textContent =
+            user.email +
+            " · " +
+            user.role;
+    }
+
+    const select =
+        $("domainSelect");
+
+    select.innerHTML =
+        "";
+
+    if (!domains.length) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.textContent =
+            "No domains available";
+
+        option.value =
+            "";
+
+        select.appendChild(
+            option
+        );
+
+        return;
+    }
+
+    domains.forEach(
+        domain => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                domain.fqdn;
+
+            option.textContent =
+                domain.fqdn;
+
+            select.appendChild(
+                option
+            );
+        }
+    );
+
+    if (!activeDomain) {
+        activeDomain =
+            domains[0];
+    }
+
+    select.value =
+        activeDomain.fqdn;
+}
+
+/* ============================================================================
+   DOMAIN
+   ============================================================================ */
+
+async function loadDomain() {
+
+    if (!activeDomain) {
+        return;
+    }
+
+    $("domainInfo")
+        .innerHTML =
+        `
+            <strong>
+                ${escapeHTML(
+                    activeDomain.fqdn
+                )}
+            </strong>
+            <br>
+            Status:
+            ${escapeHTML(
+                activeDomain.status ||
+                ""
+            )}
+            <br>
+            Tier:
+            ${escapeHTML(
+                activeDomain.tier ||
+                ""
+            )}
+        `;
+
+    $("editorSubtitle")
+        .textContent =
+        `Editing ${activeDomain.fqdn}`;
+
+    await loadSitePages();
+
+    populateProfile();
+
+    if (
+        profiles.length
+    ) {
+        $("emailSubtitle")
+            .textContent =
+            `Email for ${profiles[0].owner_email}`;
+    }
+}
+
+/* ============================================================================
+   SITE CONTENT
+   ============================================================================ */
+
+async function loadSitePages() {
+
+    const response =
+        await apiFetch(
+            "/site/" +
+            encodeURIComponent(
+                activeDomain.fqdn
+            )
+        );
+
+    if (!response.ok) {
+
+        sitePages =
+            [];
+
+        renderPageTabs();
+
+        $("visualEditor")
+            .innerHTML =
+            "<h1>New SUHS Site</h1><p>Start building your site here.</p>";
+
+        syncSource();
+
+        return;
+    }
+
+    const data =
+        await response.json();
+
+    sitePages =
+        data.content || [];
+
+    if (!sitePages.length) {
+
+        sitePages = [
+            {
+                content_key:
+                    "index.html",
+
+                content:
+                    "<h1>My SUHS Site</h1><p>Start building your site here.</p>"
+            }
+        ];
+    }
+
+    currentPage =
+        sitePages.some(
+            p =>
+                p.content_key ===
+                currentPage
+        )
+            ? currentPage
+            : sitePages[0].content_key;
+
+    renderPageTabs();
+
+    loadPage(
+        currentPage
+    );
+}
+
+/* ============================================================================
+   PAGE TABS
+   ============================================================================ */
+
+function renderPageTabs() {
+
+    const container =
+        $("pageTabs");
+
+    container.innerHTML =
+        "";
+
+    sitePages.forEach(
+        page => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "page-tab" +
+                (
+                    page.content_key ===
+                    currentPage
+                        ? " active"
+                        : ""
+                );
+
+            button.textContent =
+                page.content_key;
+
+            button.onclick =
+                () => {
+
+                    saveEditorIntoMemory();
+
+                    currentPage =
+                        page.content_key;
+
+                    renderPageTabs();
+
+                    loadPage(
+                        currentPage
+                    );
+                };
+
+            container.appendChild(
+                button
+            );
+        }
+    );
+}
+
+/* ============================================================================
+   LOAD PAGE
+   ============================================================================ */
+
+function loadPage(
+    contentKey
+) {
+
+    const page =
+        sitePages.find(
+            p =>
+                p.content_key ===
+                contentKey
+        );
+
+    const content =
+        page &&
+        page.content
+            ? page.content
+            : "<h1>New Page</h1><p>Start editing.</p>";
+
+    $("pageKey")
+        .value =
+        contentKey;
+
+    $("visualEditor")
+        .innerHTML =
+        extractBody(
+            content
+        );
+
+    $("sourceEditor")
+        .value =
+        $("visualEditor")
+            .innerHTML;
+
+    if (sourceMode) {
+        toggleSourceMode();
+    }
+}
+
+/* ============================================================================
+   BODY EXTRACTION
+   ============================================================================ */
+
+function extractBody(
+    content
+) {
+
+    if (
+        !/<html[\s>]/i.test(
+            content
+        ) &&
+        !/<body[\s>]/i.test(
+            content
+        )
+    ) {
+        return content;
+    }
+
+    try {
+
+        const parser =
+            new DOMParser();
+
+        const doc =
+            parser.parseFromString(
+                content,
+                "text/html"
+            );
+
+        return doc.body
+            ? doc.body.innerHTML
+            : content;
+
+    } catch {
+        return content;
+    }
+}
+
+/* ============================================================================
+   EDITOR
+   ============================================================================ */
+
+function execEditor(
+    command,
+    value = null
+) {
+
+    if (sourceMode) {
+        return;
+    }
+
+    $("visualEditor")
+        .focus();
+
+    document.execCommand(
+        command,
+        false,
+        value
+    );
+
+    syncSource();
+}
+
+function syncSource() {
+
+    if (!sourceMode) {
+
+        $("sourceEditor")
+            .value =
+            $("visualEditor")
+                .innerHTML;
+    }
+}
+
+function toggleSourceMode() {
+
+    const visual =
+        $("visualEditor");
+
+    const source =
+        $("sourceEditor");
+
+    const button =
+        $("sourceToggle");
+
+    if (!sourceMode) {
+
+        source.value =
+            visual.innerHTML;
+
+        visual.style.display =
+            "none";
+
+        source.style.display =
+            "block";
+
+        button.textContent =
+            "Visual";
+
+        sourceMode =
+            true;
+
+    } else {
+
+        visual.innerHTML =
+            source.value;
+
+        source.style.display =
+            "none";
+
+        visual.style.display =
+            "block";
+
+        button.textContent =
+            "HTML";
+
+        sourceMode =
+            false;
+    }
+}
+
+/* ============================================================================
+   LINK / IMAGE
+   ============================================================================ */
+
+function insertLink() {
+
+    if (sourceMode) {
+        return;
+    }
+
+    const url =
+        prompt(
+            "Enter URL:"
+        );
+
+    if (!url) {
+        return;
+    }
+
+    execEditor(
+        "createLink",
+        url
+    );
+}
+
+function insertImage() {
+
+    if (sourceMode) {
+        return;
+    }
+
+    const url =
+        prompt(
+            "Enter image URL:"
+        );
+
+    if (!url) {
+        return;
+    }
+
+    execEditor(
+        "insertImage",
+        url
+    );
+}
+
+/* ============================================================================
+   SAVE CURRENT PAGE TO MEMORY
+   ============================================================================ */
+
+function saveEditorIntoMemory() {
+
+    const content =
+        sourceMode
+            ? $("sourceEditor").value
+            : $("visualEditor").innerHTML;
+
+    const key =
+        $("pageKey")
+            .value
+            .trim() ||
+        "index.html";
+
+    const existingIndex =
+        sitePages.findIndex(
+            p =>
+                p.content_key ===
+                currentPage
+        );
+
+    const newPage = {
+        content_key:
+            key,
+
+        content:
+            content
     };
 
-    // Check existing session on load
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedToken = localStorage.getItem('suhs_token');
-        const savedDomain = localStorage.getItem('suhs_domain');
+    if (
+        existingIndex >=
+        0
+    ) {
+        sitePages[
+            existingIndex
+        ] =
+            newPage;
+    } else {
+        sitePages.push(
+            newPage
+        );
+    }
 
-        if (savedToken && savedDomain) {
-            authToken = savedToken;
-            activeDomain = savedDomain;
-            unlockWorkspace();
-            loadRemoteSiteContent();
+    currentPage =
+        key;
+}
+
+/* ============================================================================
+   PUBLISH
+   ============================================================================ */
+
+async function publishCurrentPage() {
+
+    if (!activeDomain) {
+        return;
+    }
+
+    saveEditorIntoMemory();
+
+    const status =
+        $("editorStatus");
+
+    const button =
+        $("publishButton");
+
+    setStatus(
+        status,
+        "Publishing...",
+        "info"
+    );
+
+    button.disabled =
+        true;
+
+    try {
+
+        const page =
+            sitePages.find(
+                p =>
+                    p.content_key ===
+                    currentPage
+            );
+
+        if (!page) {
+            throw new Error(
+                "No page content available."
+            );
         }
-    });
 
-    // Session Authentication
-    async function handleLogin(event) {
-        event.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        const authError = document.getElementById('authError');
-        const submitBtn = document.getElementById('loginSubmitBtn');
+        const response =
+            await apiFetch(
+                "/site/update",
+                {
+                    method:
+                        "POST",
 
-        authError.style.display = 'none';
-        submitBtn.innerText = "Authenticating...";
+                    body:
+                        JSON.stringify({
+                            fqdn:
+                                activeDomain.fqdn,
 
-        try {
-            const response = await fetch(REGISTRY_API + "/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: email, password: password })
-            });
+                            content_key:
+                                page.content_key,
 
-            const data = await response.json();
-
-            if (response.ok && data.token) {
-                authToken = data.token;
-                activeDomain = data.domain || email.split('@')[0];
-
-                localStorage.setItem('suhs_token', authToken);
-                localStorage.setItem('suhs_domain', activeDomain);
-
-                unlockWorkspace();
-                loadRemoteSiteContent();
-            } else {
-                authError.innerText = data.error || "Invalid credentials.";
-                authError.style.display = 'block';
-            }
-        } catch (error) {
-            authError.innerText = "Gateway connection error. Check API setup.";
-            authError.style.display = 'block';
-        } finally {
-            submitBtn.innerText = "Authenticate & Open Workspace";
-        }
-    }
-
-    function unlockWorkspace() {
-        document.getElementById('loginModal').style.display = 'none';
-        document.getElementById('workspace').classList.add('authenticated');
-        document.getElementById('activeDomainDisplay').innerText = activeDomain + ".suhs";
-        document.getElementById('userBadge').style.display = 'block';
-        document.getElementById('logoutBtn').style.display = 'block';
-    }
-
-    function logout() {
-        localStorage.removeItem('suhs_token');
-        localStorage.removeItem('suhs_domain');
-        location.reload();
-    }
-
-    async function loadRemoteSiteContent() {
-        try {
-            const response = await fetch(`${REGISTRY_API}/api/content?domain=${activeDomain}`, {
-                headers: { "Authorization": `Bearer ${authToken}` }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                if (data.siteStructure) {
-                    siteData = data.siteStructure;
-                    loadPageCanvasState(currentPage);
+                            content:
+                                page.content
+                        })
                 }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Publishing failed."
+            );
+        }
+
+        setStatus(
+            status,
+            data.message ||
+            "Published successfully.",
+            "success"
+        );
+
+        await loadSitePages();
+
+    } catch (e) {
+
+        setStatus(
+            status,
+            e.message ||
+            "Publishing failed.",
+            "error"
+        );
+
+    } finally {
+
+        button.disabled =
+            false;
+    }
+}
+
+/* ============================================================================
+   PREVIEW
+   ============================================================================ */
+
+function previewPage() {
+
+    saveEditorIntoMemory();
+
+    const page =
+        sitePages.find(
+            p =>
+                p.content_key ===
+                currentPage
+        );
+
+    if (!page) {
+        return;
+    }
+
+    const win =
+        window.open(
+            "",
+            "_blank"
+        );
+
+    if (!win) {
+        alert(
+            "The browser blocked the preview window."
+        );
+
+        return;
+    }
+
+    win.document.open();
+
+    win.document.write(
+        page.content
+    );
+
+    win.document.close();
+}
+
+/* ============================================================================
+   PROFILE
+   ============================================================================ */
+
+function populateProfile() {
+
+    const profile =
+        currentAccount &&
+        currentAccount.profile
+            ? currentAccount.profile
+            : (
+                profiles.length
+                    ? profiles[0]
+                    : null
+            );
+
+    if (!profile) {
+        return;
+    }
+
+    $("profileEmail")
+        .value =
+        profile.owner_email ||
+        "";
+
+    $("profileUsername")
+        .value =
+        profile.username ||
+        "";
+
+    $("profileName")
+        .value =
+        profile.display_name ||
+        "";
+
+    $("profileAvatar")
+        .value =
+        profile.avatar_url ||
+        "";
+
+    $("profileBio")
+        .value =
+        profile.bio ||
+        "";
+
+    $("mailFrom")
+        .value =
+        profile.owner_email ||
+        "";
+}
+
+/* ============================================================================
+   SAVE PROFILE
+   ============================================================================ */
+
+async function saveProfile() {
+
+    const status =
+        $("profileStatus");
+
+    setStatus(
+        status,
+        "Saving profile...",
+        "info"
+    );
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/profile/update",
+                {
+                    method:
+                        "POST",
+
+                    body:
+                        JSON.stringify({
+                            display_name:
+                                $("profileName")
+                                    .value,
+
+                            bio:
+                                $("profileBio")
+                                    .value,
+
+                            avatar_url:
+                                $("profileAvatar")
+                                    .value
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Profile update failed."
+            );
+        }
+
+        setStatus(
+            status,
+            "Profile saved.",
+            "success"
+        );
+
+        await refreshAccount();
+
+    } catch (e) {
+
+        setStatus(
+            status,
+            e.message ||
+            "Profile update failed.",
+            "error"
+        );
+    }
+}
+
+/* ============================================================================
+   REFRESH ACCOUNT
+   ============================================================================ */
+
+async function refreshAccount() {
+
+    const response =
+        await apiFetch(
+            "/api/account"
+        );
+
+    if (!response.ok) {
+        return;
+    }
+
+    const data =
+        await response.json();
+
+    currentAccount =
+        data;
+
+    domains =
+        data.domains || [];
+
+    profiles =
+        data.profiles || [];
+
+    populateAccount();
+
+    populateProfile();
+}
+
+/* ============================================================================
+   EMAIL PROFILE
+   ============================================================================ */
+
+function getEmailProfile() {
+
+    if (
+        currentAccount &&
+        currentAccount.profile
+    ) {
+        return currentAccount.profile;
+    }
+
+    return profiles.length
+        ? profiles[0]
+        : null;
+}
+
+/* ============================================================================
+   LOAD INBOX
+   ============================================================================ */
+
+async function loadInbox() {
+
+    const profile =
+        getEmailProfile();
+
+    if (!profile) {
+
+        $("messageList")
+            .innerHTML =
+            `
+                <div style="padding:15px;color:#94a3b8;">
+                    No email profile is associated
+                    with this account.
+                </div>
+            `;
+
+        return;
+    }
+
+    $("emailSubtitle")
+        .textContent =
+        `Inbox: ${profile.owner_email}`;
+
+    $("mailFrom")
+        .value =
+        profile.owner_email;
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/api/mail/inbox/" +
+                encodeURIComponent(
+                    profile.id
+                )
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Unable to load inbox."
+            );
+        }
+
+        messages =
+            data.messages || [];
+
+        renderMessages();
+
+    } catch (e) {
+
+        $("messageList")
+            .innerHTML =
+            `
+                <div style="padding:15px;color:#fca5a5;">
+                    ${escapeHTML(
+                        e.message
+                    )}
+                </div>
+            `;
+    }
+}
+
+/* ============================================================================
+   RENDER MESSAGES
+   ============================================================================ */
+
+function renderMessages() {
+
+    const list =
+        $("messageList");
+
+    list.innerHTML =
+        "";
+
+    if (!messages.length) {
+
+        list.innerHTML =
+            `
+                <div style="
+                    padding:18px;
+                    color:#94a3b8;
+                    font-size:13px;
+                ">
+                    Inbox is empty.
+                </div>
+            `;
+
+        return;
+    }
+
+    messages.forEach(
+        message => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.className =
+                "message-row" +
+                (
+                    String(
+                        message.id
+                    ) ===
+                    String(
+                        selectedMessageId
+                    )
+                        ? " active"
+                        : ""
+                );
+
+            row.innerHTML =
+                `
+                    <div class="message-sender">
+                        ${escapeHTML(
+                            message.sender ||
+                            ""
+                        )}
+                    </div>
+
+                    <div class="message-subject">
+                        ${escapeHTML(
+                            message.subject ||
+                            "(No Subject)"
+                        )}
+                    </div>
+
+                    <div class="message-date">
+                        ${formatDate(
+                            message.received_at
+                        )}
+                    </div>
+                `;
+
+            row.onclick =
+                () => {
+
+                    selectedMessageId =
+                        message.id;
+
+                    renderMessages();
+
+                    showMessage(
+                        message
+                    );
+                };
+
+            list.appendChild(
+                row
+            );
+        }
+    );
+}
+
+/* ============================================================================
+   SHOW MESSAGE
+   ============================================================================ */
+
+function showMessage(
+    message
+) {
+
+    $("messageView")
+        .innerHTML =
+        `
+            <h2>
+                ${escapeHTML(
+                    message.subject ||
+                    "(No Subject)"
+                )}
+            </h2>
+
+            <div class="message-meta">
+
+                <strong>
+                    From:
+                </strong>
+
+                ${escapeHTML(
+                    message.sender ||
+                    ""
+                )}
+
+                <br>
+
+                <strong>
+                    Received:
+                </strong>
+
+                ${formatDate(
+                    message.received_at
+                )}
+
+            </div>
+
+            <div class="message-body">
+                ${escapeHTML(
+                    message.body_content ||
+                    ""
+                )}
+            </div>
+        `;
+}
+
+/* ============================================================================
+   COMPOSE
+   ============================================================================ */
+
+function openCompose() {
+
+    $("composeCard")
+        .style.display =
+        "block";
+
+    $("mailRecipient")
+        .focus();
+
+    clearStatus(
+        $("mailStatus")
+    );
+}
+
+function closeCompose() {
+
+    $("composeCard")
+        .style.display =
+        "none";
+
+    $("mailRecipient")
+        .value =
+        "";
+
+    $("mailSubject")
+        .value =
+        "";
+
+    $("mailBody")
+        .value =
+        "";
+
+    clearStatus(
+        $("mailStatus")
+    );
+}
+
+/* ============================================================================
+   SEND MAIL
+   ============================================================================ */
+
+async function sendMail() {
+
+    const profile =
+        getEmailProfile();
+
+    if (!profile) {
+        return;
+    }
+
+    const status =
+        $("mailStatus");
+
+    const button =
+        $("sendMailButton");
+
+    const recipient =
+        $("mailRecipient")
+            .value
+            .trim();
+
+    const subject =
+        $("mailSubject")
+            .value
+            .trim();
+
+    const body =
+        $("mailBody")
+            .value;
+
+    if (!recipient) {
+
+        setStatus(
+            status,
+            "Recipient is required.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (!body.trim()) {
+
+        setStatus(
+            status,
+            "Message body is required.",
+            "error"
+        );
+
+        return;
+    }
+
+    button.disabled =
+        true;
+
+    setStatus(
+        status,
+        "Sending...",
+        "info"
+    );
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/api/mail/send",
+                {
+                    method:
+                        "POST",
+
+                    body:
+                        JSON.stringify({
+                            profileId:
+                                profile.id,
+
+                            recipientEmail:
+                                recipient,
+
+                            subject:
+                                subject,
+
+                            body:
+                                body
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Unable to send message."
+            );
+        }
+
+        setStatus(
+            status,
+            "Email sent successfully.",
+            "success"
+        );
+
+        $("mailRecipient")
+            .value =
+            "";
+
+        $("mailSubject")
+            .value =
+            "";
+
+        $("mailBody")
+            .value =
+            "";
+
+    } catch (e) {
+
+        setStatus(
+            status,
+            e.message ||
+            "Unable to send message.",
+            "error"
+        );
+
+    } finally {
+
+        button.disabled =
+            false;
+    }
+}
+
+/* ============================================================================
+   VIEW SWITCHING
+   ============================================================================ */
+
+function showView(
+    view
+) {
+
+    document
+        .querySelectorAll(
+            ".nav-button"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.view ===
+                    view
+                );
             }
-        } catch (e) {
-            console.log("No previous saved structure found. Using clean canvas.");
-        }
-    }
+        );
 
-    // Tab Management & Payment Logic
-    function handleNewPageRequest() {
-        if (pageCount >= 3 && !isPaidTier) {
-            document.getElementById('paymentModal').style.display = 'flex';
-            return;
-        }
+    document
+        .querySelectorAll(
+            ".view"
+        )
+        .forEach(
+            element => {
 
-        pageCount++;
-        const pageId = 'page_' + pageCount;
-        siteData[pageId] = { background: '#0d1118', bgImage: '', elements: [] };
-
-        const tabBar = document.getElementById('tabBar');
-        const addBtn = tabBar.querySelector('.add-tab-btn');
-        const newTab = document.createElement('button');
-        newTab.className = 'tab';
-        newTab.dataset.page = pageId;
-        newTab.innerHTML = `Page ${pageCount}`;
-        newTab.onclick = function() { switchTab(pageId, newTab); };
-        tabBar.insertBefore(newTab, addBtn);
-
-        const navBtn = addElement('button', `Go to Page ${pageCount}`);
-        navBtn.style.top = '20px';
-        navBtn.style.left = (20 + (pageCount * 120)) + 'px';
-
-        switchTab(pageId, newTab);
-    }
-
-    function switchTab(pageId, tabElement) {
-        saveCurrentPageCanvasState();
-        currentPage = pageId;
-
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        tabElement.classList.add('active');
-
-        loadPageCanvasState(pageId);
-    }
-
-    function resolvePayment() {
-        isPaidTier = true;
-        closeModal('paymentModal');
-        alert("Payment authorized! You can now create unlimited pages.");
-        handleNewPageRequest();
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-
-    // Canvas Drag & Drop System
-    function addElement(type, textContent = null) {
-        const canvas = document.getElementById('canvas');
-        const el = document.createElement('div');
-        el.className = 'canvas-element';
-        el.dataset.type = type;
-        el.style.top = '100px';
-        el.style.left = '100px';
-
-        if (type === 'text') {
-            el.innerText = textContent || 'Editable Heading';
-            el.style.color = '#ffffff';
-            el.style.fontSize = '20px';
-        } else if (type === 'button') {
-            el.innerText = textContent || 'Click Here';
-            el.style.backgroundColor = '#3b82f6';
-            el.style.color = '#ffffff';
-        } else if (type === 'box') {
-            el.style.width = '200px';
-            el.style.height = '150px';
-            el.style.backgroundColor = '#161b22';
-            el.style.border = '1px solid #222831';
-        }
-
-        makeDraggable(el);
-        el.onclick = (e) => selectElement(e, el);
-        canvas.appendChild(el);
-        selectElement(null, el);
-        return el;
-    }
-
-    function makeDraggable(el) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        el.onmousedown = dragMouseDown;
-
-        function dragMouseDown(e) {
-            e = e || window.event;
-            if (e.target !== el) return;
-            e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            el.style.top = (el.offsetTop - pos2) + "px";
-            el.style.left = (el.offsetLeft - pos1) + "px";
-        }
-
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-    }
-
-    // Element Selection & Inspector Panel
-    function selectElement(event, el) {
-        if (event) event.stopPropagation();
-        deselectElements();
-
-        selectedElement = el;
-        el.classList.add('selected');
-
-        const inspector = document.getElementById('elementInspector');
-        inspector.style.display = 'block';
-
-        document.getElementById('inspectorText').value = el.innerText || '';
-        document.getElementById('inspectorFontSize').value = parseInt(window.getComputedStyle(el).fontSize) || '';
-    }
-
-    function deselectElements(event) {
-        if (event && event.target.id !== 'canvas') return;
-        document.querySelectorAll('.canvas-element').forEach(el => el.classList.remove('selected'));
-        selectedElement = null;
-        document.getElementById('elementInspector').style.display = 'none';
-    }
-
-    function updateSelectedElementText(val) {
-        if (selectedElement) selectedElement.innerText = val;
-    }
-
-    function updateSelectedStyle(property, value) {
-        if (selectedElement) selectedElement.style[property] = value;
-    }
-
-    function deleteSelectedElement() {
-        if (selectedElement) {
-            selectedElement.remove();
-            deselectElements();
-        }
-    }
-
-    // Upload Handlers
-    function triggerImageUpload() {
-        document.getElementById('imageUploader').click();
-    }
-
-    function handleImageUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const canvas = document.getElementById('canvas');
-            const el = document.createElement('div');
-            el.className = 'canvas-element';
-            el.dataset.type = 'image';
-            el.style.top = '100px';
-            el.style.left = '100px';
-            el.style.width = '200px';
-            el.style.height = '150px';
-
-            const img = document.createElement('img');
-            img.src = event.target.result;
-            el.appendChild(img);
-
-            makeDraggable(el);
-            el.onclick = (evt) => selectElement(evt, el);
-            canvas.appendChild(el);
-            selectElement(null, el);
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function handleCanvasBgUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const canvas = document.getElementById('canvas');
-            canvas.style.backgroundImage = `url(${event.target.result})`;
-            siteData[currentPage].bgImage = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function updateCanvasBgColor(color) {
-        const canvas = document.getElementById('canvas');
-        canvas.style.backgroundColor = color;
-        siteData[currentPage].background = color;
-    }
-
-    // Save & Load Canvas State
-    function saveCurrentPageCanvasState() {
-        const canvas = document.getElementById('canvas');
-        const elements = [];
-
-        canvas.querySelectorAll('.canvas-element').forEach(el => {
-            elements.push({
-                type: el.dataset.type,
-                top: el.style.top,
-                left: el.style.left,
-                width: el.style.width,
-                height: el.style.height,
-                text: el.innerText,
-                html: el.innerHTML,
-                color: el.style.color,
-                backgroundColor: el.style.backgroundColor,
-                fontSize: el.style.fontSize
-            });
-        });
-
-        siteData[currentPage].elements = elements;
-    }
-
-    function loadPageCanvasState(pageId) {
-        const canvas = document.getElementById('canvas');
-        canvas.innerHTML = '';
-
-        const state = siteData[pageId];
-        if (!state) return;
-
-        canvas.style.backgroundColor = state.background || '#0d1118';
-        canvas.style.backgroundImage = state.bgImage ? `url(${state.bgImage})` : 'none';
-
-        if (state.elements) {
-            state.elements.forEach(data => {
-                const el = document.createElement('div');
-                el.className = 'canvas-element';
-                el.dataset.type = data.type;
-                el.style.top = data.top;
-                el.style.left = data.left;
-                if (data.width) el.style.width = data.width;
-                if (data.height) el.style.height = data.height;
-                if (data.color) el.style.color = data.color;
-                if (data.backgroundColor) el.style.backgroundColor = data.backgroundColor;
-                if (data.fontSize) el.style.fontSize = data.fontSize;
-                el.innerHTML = data.html || data.text;
-
-                makeDraggable(el);
-                el.onclick = (e) => selectElement(e, el);
-                canvas.appendChild(el);
-            });
-        }
-    }
-
-    // HTML Code Mode Switcher
-    function toggleViewMode() {
-        const btn = document.getElementById('toggleModeBtn');
-        const codeEditor = document.getElementById('codeEditor');
-        const canvasContainer = document.getElementById('canvasContainer');
-        const toolbar = document.getElementById('toolbar');
-
-        if (viewMode === 'visual') {
-            saveCurrentPageCanvasState();
-            const canvas = document.getElementById('canvas');
-            codeEditor.value = canvas.innerHTML;
-            
-            canvasContainer.style.display = 'none';
-            toolbar.style.opacity = '0.3';
-            toolbar.style.pointerEvents = 'none';
-            codeEditor.style.display = 'block';
-            
-            btn.innerText = 'Visual Editor Mode';
-            viewMode = 'code';
-        } else {
-            const canvas = document.getElementById('canvas');
-            canvas.innerHTML = codeEditor.value;
-            
-            canvas.querySelectorAll('.canvas-element').forEach(el => {
-                makeDraggable(el);
-                el.onclick = (e) => selectElement(e, el);
-            });
-
-            codeEditor.style.display = 'none';
-            canvasContainer.style.display = 'flex';
-            toolbar.style.opacity = '1';
-            toolbar.style.pointerEvents = 'all';
-            
-            btn.innerText = 'HTML Code Mode';
-            viewMode = 'visual';
-        }
-    }
-
-    // Publish Payload to Worker
-    async function saveAndPublish() {
-        saveCurrentPageCanvasState();
-        const fullHtml = document.getElementById('canvas').innerHTML;
-
-        const payload = {
-            domain: activeDomain,
-            siteStructure: siteData,
-            compiledHtml: fullHtml
-        };
-
-        try {
-            const res = await fetch(REGISTRY_API + "/api/content/update", {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${authToken}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                alert(`Site '${activeDomain}.suhs' updated successfully on the SUHS network!`);
-            } else {
-                alert("Sync endpoint returned status: " + res.status);
+                element.classList.toggle(
+                    "active",
+                    element.id ===
+                    "view-" +
+                    view
+                );
             }
-        } catch (e) {
-            alert("Error connecting to registry gateway.");
-        }
+        );
+
+    if (
+        view ===
+        "email"
+    ) {
+        loadInbox();
     }
+
+    if (
+        view ===
+        "profile"
+    ) {
+        populateProfile();
+    }
+}
+
+/* ============================================================================
+   UTILITIES
+   ============================================================================ */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+        return "";
+    }
+
+    const numeric =
+        Number(value);
+
+    const date =
+        Number.isFinite(
+            numeric
+        )
+            ? new Date(
+                numeric < 100000000000
+                    ? numeric * 1000
+                    : numeric
+            )
+            : new Date(
+                value
+            );
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return String(value);
+    }
+
+    return date.toLocaleString();
+}
+
 </script>
+
 </body>
 </html>
-
