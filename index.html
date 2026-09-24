@@ -1071,7 +1071,7 @@ footer {
 <script>
 
 const REGISTRY_API =
-  "https://suhs-registry.michaelaroot1987.workers.dev";
+  "https://suhs.suhs.workers.dev";
 
 const AUTH_STORAGE_KEY =
   "suhs_basic_auth";
@@ -1541,7 +1541,7 @@ function renderDomains(
             : `
               <a
                 class="small-button"
-                href="${REGISTRY_API}/render/${encodeURIComponent(domain.fqdn)}/index.html"
+                href="\( {REGISTRY_API}/render/ \){encodeURIComponent(domain.fqdn)}/index.html"
                 target="_blank"
               >
                 View Site
