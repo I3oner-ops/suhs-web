@@ -542,10 +542,6 @@ footer {
 
 <main>
 
-<!-- ================================================================
-     PUBLIC HERO
-================================================================ -->
-
 <section class="hero">
 
   <div class="eyebrow">
@@ -573,10 +569,6 @@ footer {
 
 </section>
 
-<!-- ================================================================
-     ABOUT
-================================================================ -->
-
 <section id="about">
 
   <h2>
@@ -592,10 +584,6 @@ footer {
 
 </section>
 
-<!-- ================================================================
-     REGISTRY
-================================================================ -->
-
 <section id="registry">
 
   <h2>
@@ -605,71 +593,45 @@ footer {
   <div class="grid">
 
     <div class="card">
-
-      <h3>
-        .suhs
-      </h3>
-
+      <h3>.suhs</h3>
       <p>
         The public namespace used for websites,
         applications, projects and services.
       </p>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        .root
-      </h3>
-
+      <h3>.root</h3>
       <p>
         The paired administrative namespace used
         to manage the corresponding public .suhs
         domain.
       </p>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        Profile Identity
-      </h3>
-
+      <h3>Profile Identity</h3>
       <p>
         Every registered owner can have a registry
         profile associated with their SUHS identity.
       </p>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        Virtual Email
-      </h3>
-
+      <h3>Virtual Email</h3>
       <p>
         SUHS profiles can receive mail through their
         allocated SUHS email identity.
       </p>
-
     </div>
 
   </div>
 
 </section>
 
-<!-- ================================================================
-     REGISTER
-================================================================ -->
-
 <section id="register">
 
-  <h2>
-    Register
-  </h2>
+  <h2>Register</h2>
 
   <p class="section-copy">
     Register a public .suhs namespace and its paired
@@ -679,80 +641,31 @@ footer {
   <form id="registrationForm">
 
     <div class="field">
-
-      <label for="registerDomain">
-        Domain Name
-      </label>
-
-      <input
-        id="registerDomain"
-        type="text"
-        placeholder="yourname"
-        autocomplete="username"
-        required
-      >
-
+      <label for="registerDomain">Domain Name</label>
+      <input id="registerDomain" type="text" placeholder="yourname" autocomplete="username" required>
     </div>
 
     <div class="field">
-
-      <label for="registerEmail">
-        Email
-      </label>
-
-      <input
-        id="registerEmail"
-        type="email"
-        placeholder="you@example.com"
-        autocomplete="email"
-        required
-      >
-
+      <label for="registerEmail">Email</label>
+      <input id="registerEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
     </div>
 
     <div class="field">
-
-      <label for="registerPassword">
-        Password
-      </label>
-
-      <input
-        id="registerPassword"
-        type="password"
-        autocomplete="new-password"
-        required
-      >
-
+      <label for="registerPassword">Password</label>
+      <input id="registerPassword" type="password" autocomplete="new-password" required>
     </div>
 
-    <button
-      class="button"
-      type="submit"
-    >
-      Register
-    </button>
+    <button class="button" type="submit">Register</button>
 
   </form>
 
-  <div
-    id="registrationStatus"
-    class="status"
-  ></div>
+  <div id="registrationStatus" class="status"></div>
 
 </section>
 
-<!-- ================================================================
-     LOGIN
-================================================================ -->
+<section id="login" class="auth-panel">
 
-<section
-  id="login"
-  class="auth-panel"
->
-
-  <h2>
-    Sign in
-  </h2>
+  <h2>Sign in</h2>
 
   <p class="section-copy">
     Sign in with your SUHS username, SUHS email address,
@@ -764,134 +677,62 @@ footer {
     <form id="loginForm">
 
       <div class="field">
-
-        <label for="loginIdentifier">
-          Username or Email
-        </label>
-
-        <input
-          id="loginIdentifier"
-          type="text"
-          autocomplete="username"
-          required
-        >
-
+        <label for="loginIdentifier">Username or Email</label>
+        <input id="loginIdentifier" type="text" autocomplete="username" required>
       </div>
 
       <div class="field">
-
-        <label for="loginPassword">
-          Password
-        </label>
-
-        <input
-          id="loginPassword"
-          type="password"
-          autocomplete="current-password"
-          required
-        >
-
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
       </div>
 
-      <button
-        class="button"
-        type="submit"
-      >
-        Sign in
-      </button>
+      <button class="button" type="submit">Sign in</button>
 
     </form>
 
-    <div
-      id="loginStatus"
-      class="status"
-    ></div>
+    <div id="loginStatus" class="status"></div>
 
   </div>
 
 </section>
 
-<!-- ================================================================
-     DASHBOARD
-================================================================ -->
-
-<section
-  id="dashboard"
-  class="dashboard"
->
+<section id="dashboard" class="dashboard">
 
   <div class="user-bar">
 
     <div>
-
-      <strong id="dashboardName">
-        SUHS User
-      </strong>
-
+      <strong id="dashboardName">SUHS User</strong>
       <br>
-
       <small id="dashboardEmail"></small>
-
     </div>
 
-    <button
-      class="button secondary"
-      id="logoutButton"
-      type="button"
-    >
+    <button class="button secondary" id="logoutButton" type="button">
       Sign out
     </button>
 
   </div>
 
-  <!-- PROFILE -->
-
   <section style="padding:0 0 60px 0">
 
-    <h2>
-      Profile
-    </h2>
+    <h2>Profile</h2>
 
     <div class="profile-grid">
 
       <div class="card">
 
         <div class="field">
-
-          <label>
-            SUHS Email
-          </label>
-
-          <input
-            id="profileEmail"
-            readonly
-          >
-
+          <label>SUHS Email</label>
+          <input id="profileEmail" readonly>
         </div>
 
         <div class="field">
-
-          <label>
-            Username
-          </label>
-
-          <input
-            id="profileUsername"
-            readonly
-          >
-
+          <label>Username</label>
+          <input id="profileUsername" readonly>
         </div>
 
         <div class="field">
-
-          <label for="profileDisplayName">
-            Display Name
-          </label>
-
-          <input
-            id="profileDisplayName"
-          >
-
+          <label for="profileDisplayName">Display Name</label>
+          <input id="profileDisplayName">
         </div>
 
       </div>
@@ -899,41 +740,20 @@ footer {
       <div class="card">
 
         <div class="field">
-
-          <label for="profileBio">
-            Bio
-          </label>
-
-          <textarea
-            id="profileBio"
-          ></textarea>
-
+          <label for="profileBio">Bio</label>
+          <textarea id="profileBio"></textarea>
         </div>
 
         <div class="field">
-
-          <label for="profileAvatar">
-            Avatar URL
-          </label>
-
-          <input
-            id="profileAvatar"
-          >
-
+          <label for="profileAvatar">Avatar URL</label>
+          <input id="profileAvatar">
         </div>
 
-        <button
-          class="button"
-          id="saveProfileButton"
-          type="button"
-        >
+        <button class="button" id="saveProfileButton" type="button">
           Save Profile
         </button>
 
-        <div
-          id="profileStatus"
-          class="status"
-        ></div>
+        <div id="profileStatus" class="status"></div>
 
       </div>
 
@@ -941,28 +761,17 @@ footer {
 
   </section>
 
-  <!-- DOMAINS -->
-
   <section style="padding:0 0 60px 0">
 
-    <h2>
-      My Domains
-    </h2>
+    <h2>My Domains</h2>
 
-    <div
-      id="domainList"
-      class="grid"
-    ></div>
+    <div id="domainList" class="grid"></div>
 
   </section>
 
-  <!-- EMAIL -->
-
   <section style="padding:0 0 60px 0">
 
-    <h2>
-      Profile Email
-    </h2>
+    <h2>Profile Email</h2>
 
     <p class="section-copy">
       Mail delivered to your SUHS profile address appears
@@ -972,23 +781,11 @@ footer {
     <div class="card">
 
       <div class="field">
-
-        <label>
-          Your SUHS Email Address
-        </label>
-
-        <input
-          id="mailAddress"
-          readonly
-        >
-
+        <label>Your SUHS Email Address</label>
+        <input id="mailAddress" readonly>
       </div>
 
-      <button
-        class="button secondary"
-        id="refreshMailButton"
-        type="button"
-      >
+      <button class="button secondary" id="refreshMailButton" type="button">
         Refresh Inbox
       </button>
 
@@ -996,65 +793,33 @@ footer {
 
     <br>
 
-    <div
-      id="mailList"
-      class="mail-list"
-    ></div>
+    <div id="mailList" class="mail-list"></div>
 
-    <div
-      id="mailStatus"
-      class="status"
-    ></div>
+    <div id="mailStatus" class="status"></div>
 
   </section>
 
-  <!-- SEND -->
-
   <section style="padding:0 0 60px 0">
 
-    <h2>
-      Send Email
-    </h2>
+    <h2>Send Email</h2>
 
     <div class="card">
 
       <div class="field">
-
-        <label for="recipientEmail">
-          Recipient
-        </label>
-
-        <input
-          id="recipientEmail"
-          type="email"
-        >
-
+        <label for="recipientEmail">Recipient</label>
+        <input id="recipientEmail" type="email">
       </div>
 
       <div class="field">
-
-        <label for="outboundBody">
-          Message
-        </label>
-
-        <textarea
-          id="outboundBody"
-        ></textarea>
-
+        <label for="outboundBody">Message</label>
+        <textarea id="outboundBody"></textarea>
       </div>
 
-      <button
-        class="button"
-        id="sendMailButton"
-        type="button"
-      >
+      <button class="button" id="sendMailButton" type="button">
         Send Email
       </button>
 
-      <div
-        id="sendMailStatus"
-        class="status"
-      ></div>
+      <div id="sendMailStatus" class="status"></div>
 
     </div>
 
@@ -1070,1017 +835,326 @@ footer {
 
 <script>
 
-const REGISTRY_API =
-  "https://suhs.suhs.workers.dev";
+const REGISTRY_API = "https://suhs.suhs.workers.dev";
 
-const AUTH_STORAGE_KEY =
-  "suhs_basic_auth";
+const AUTH_STORAGE_KEY = "suhs_basic_auth";
 
-let currentAccount =
-  null;
+let currentAccount = null;
 
-/* ================================================================
-   ELEMENTS
-================================================================ */
+const loginSection = document.getElementById("login");
+const dashboard = document.getElementById("dashboard");
+const loginStatus = document.getElementById("loginStatus");
+const registrationStatus = document.getElementById("registrationStatus");
 
-const loginSection =
-  document.getElementById(
-    "login"
-  );
-
-const dashboard =
-  document.getElementById(
-    "dashboard"
-  );
-
-const loginStatus =
-  document.getElementById(
-    "loginStatus"
-  );
-
-const registrationStatus =
-  document.getElementById(
-    "registrationStatus"
-  );
-
-/* ================================================================
-   BASIC AUTH
-================================================================ */
-
-function makeBasicAuth(
-  identifier,
-  password
-) {
-
-  const raw =
-    identifier.trim().toLowerCase() +
-    ":" +
-    password;
-
-  return (
-    "Basic " +
-    btoa(
-      unescape(
-        encodeURIComponent(raw)
-      )
-    )
-  );
+function makeBasicAuth(identifier, password) {
+  const raw = identifier.trim().toLowerCase() + ":" + password;
+  return "Basic " + btoa(unescape(encodeURIComponent(raw)));
 }
 
 function getAuth() {
-
-  return sessionStorage.getItem(
-    AUTH_STORAGE_KEY
-  );
+  return sessionStorage.getItem(AUTH_STORAGE_KEY);
 }
 
-function setAuth(
-  auth
-) {
-
-  sessionStorage.setItem(
-    AUTH_STORAGE_KEY,
-    auth
-  );
+function setAuth(auth) {
+  sessionStorage.setItem(AUTH_STORAGE_KEY, auth);
 }
 
 function clearAuth() {
-
-  sessionStorage.removeItem(
-    AUTH_STORAGE_KEY
-  );
+  sessionStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
-/* ================================================================
-   STATUS
-================================================================ */
-
-function setStatus(
-  element,
-  message,
-  type = ""
-) {
-
-  element.textContent =
-    message;
-
-  element.className =
-    "status " + type;
+function setStatus(element, message, type = "") {
+  element.textContent = message;
+  element.className = "status " + type;
 }
 
-/* ================================================================
-   AUTHENTICATED FETCH
-================================================================ */
+async function api(path, options = {}) {
+  const auth = getAuth();
+  const headers = { ...(options.headers || {}) };
 
-async function api(
-  path,
-  options = {}
-) {
-
-  const auth =
-    getAuth();
-
-  const headers = {
-    ...(options.headers || {})
-  };
-
-  if (
-    options.body &&
-    !headers["Content-Type"]
-  ) {
-    headers["Content-Type"] =
-      "application/json";
+  if (options.body && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
   }
 
   if (auth) {
-    headers.Authorization =
-      auth;
+    headers.Authorization = auth;
   }
 
-  const response =
-    await fetch(
-      REGISTRY_API + path,
-      {
-        ...options,
-        headers
-      }
-    );
+  const response = await fetch(REGISTRY_API + path, {
+    ...options,
+    headers
+  });
 
   let data = null;
-
   try {
-    data =
-      await response.json();
+    data = await response.json();
   } catch {
     data = {};
   }
 
-  if (
-    response.status === 401
-  ) {
-
+  if (response.status === 401) {
     clearAuth();
-
     showLoggedOut();
-
-    throw new Error(
-      "Authentication expired."
-    );
+    throw new Error("Authentication expired.");
   }
 
   if (!response.ok) {
-
-    throw new Error(
-      data.message ||
-      data.error ||
-      `HTTP ${response.status}`
-    );
+    throw new Error(data.message || data.error || `HTTP ${response.status}`);
   }
 
   return data;
 }
 
-/* ================================================================
-   LOGIN
-================================================================ */
+document.getElementById("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-document
-  .getElementById(
-    "loginForm"
-  )
-  .addEventListener(
-    "submit",
-    async event => {
+  const identifier = document.getElementById("loginIdentifier").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-      event.preventDefault();
+  setStatus(loginStatus, "Authenticating...");
 
-      const identifier =
-        document
-          .getElementById(
-            "loginIdentifier"
-          )
-          .value
-          .trim();
+  try {
+    const response = await fetch(REGISTRY_API + "/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        loginIdentifier: identifier,
+        password: password
+      })
+    });
 
-      const password =
-        document
-          .getElementById(
-            "loginPassword"
-          )
-          .value;
+    const data = await response.json();
 
-      setStatus(
-        loginStatus,
-        "Authenticating..."
-      );
-
-      try {
-
-        const response =
-          await fetch(
-            REGISTRY_API +
-              "/api/auth/login",
-            {
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-                  loginIdentifier:
-                    identifier,
-
-                  password:
-                    password
-                })
-            }
-          );
-
-        const data =
-          await response.json();
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.message ||
-            data.error ||
-            "Authentication failed."
-          );
-        }
-
-        const basic =
-          makeBasicAuth(
-            identifier,
-            password
-          );
-
-        setAuth(
-          basic
-        );
-
-        setStatus(
-          loginStatus,
-          "Signed in successfully.",
-          "success"
-        );
-
-        document
-          .getElementById(
-            "loginPassword"
-          )
-          .value = "";
-
-        await loadAccount();
-
-        window.location.hash =
-          "dashboard";
-
-      } catch (error) {
-
-        clearAuth();
-
-        setStatus(
-          loginStatus,
-          error.message ||
-            "Authentication failed.",
-          "error"
-        );
-      }
-
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Authentication failed.");
     }
-  );
 
-/* ================================================================
-   ACCOUNT
-================================================================ */
+    const basic = makeBasicAuth(identifier, password);
+    setAuth(basic);
+
+    setStatus(loginStatus, "Signed in successfully.", "success");
+    document.getElementById("loginPassword").value = "";
+
+    await loadAccount();
+    window.location.hash = "dashboard";
+
+  } catch (error) {
+    clearAuth();
+    setStatus(loginStatus, error.message || "Authentication failed.", "error");
+  }
+});
 
 async function loadAccount() {
-
-  const data =
-    await api(
-      "/api/account"
-    );
-
-  currentAccount =
-    data;
-
-  renderAccount(
-    data
-  );
-
-  dashboard.style.display =
-    "block";
-
-  loginSection.style.display =
-    "none";
-
+  const data = await api("/api/account");
+  currentAccount = data;
+  renderAccount(data);
+  dashboard.style.display = "block";
+  loginSection.style.display = "none";
   await loadInbox();
 }
 
-/* ================================================================
-   ACCOUNT DISPLAY
-================================================================ */
+function renderAccount(data) {
+  const user = data.user || {};
+  const profile = data.profile || {};
 
-function renderAccount(
-  data
-) {
+  document.getElementById("dashboardName").textContent =
+    profile.display_name || user.email || "SUHS User";
 
-  const user =
-    data.user || {};
+  document.getElementById("dashboardEmail").textContent = user.email || "";
+  document.getElementById("profileEmail").value = profile.owner_email || user.email || "";
+  document.getElementById("profileUsername").value = profile.username || "";
+  document.getElementById("profileDisplayName").value = profile.display_name || "";
+  document.getElementById("profileBio").value = profile.bio || "";
+  document.getElementById("profileAvatar").value = profile.avatar_url || "";
+  document.getElementById("mailAddress").value = profile.owner_email || user.email || "";
 
-  const profile =
-    data.profile || {};
-
-  document
-    .getElementById(
-      "dashboardName"
-    )
-    .textContent =
-      profile.display_name ||
-      user.email ||
-      "SUHS User";
-
-  document
-    .getElementById(
-      "dashboardEmail"
-    )
-    .textContent =
-      user.email || "";
-
-  document
-    .getElementById(
-      "profileEmail"
-    )
-    .value =
-      profile.owner_email ||
-      user.email ||
-      "";
-
-  document
-    .getElementById(
-      "profileUsername"
-    )
-    .value =
-      profile.username ||
-      "";
-
-  document
-    .getElementById(
-      "profileDisplayName"
-    )
-    .value =
-      profile.display_name ||
-      "";
-
-  document
-    .getElementById(
-      "profileBio"
-    )
-    .value =
-      profile.bio ||
-      "";
-
-  document
-    .getElementById(
-      "profileAvatar"
-    )
-    .value =
-      profile.avatar_url ||
-      "";
-
-  document
-    .getElementById(
-      "mailAddress"
-    )
-    .value =
-      profile.owner_email ||
-      user.email ||
-      "";
-
-  renderDomains(
-    data.domains || []
-  );
+  renderDomains(data.domains || []);
 }
 
-/* ================================================================
-   DOMAIN LIST
-================================================================ */
-
-function renderDomains(
-  domains
-) {
-
-  const container =
-    document.getElementById(
-      "domainList"
-    );
-
+function renderDomains(domains) {
+  const container = document.getElementById("domainList");
   container.innerHTML = "";
 
   if (!domains.length) {
-
-    container.innerHTML =
-      `<div class="empty">
-        No domains are associated with this account.
-      </div>`;
-
+    container.innerHTML = `<div class="empty">No domains are associated with this account.</div>`;
     return;
   }
 
-  for (
-    const domain of domains
-  ) {
+  for (const domain of domains) {
+    const card = document.createElement("div");
+    card.className = "card domain-card";
 
-    const card =
-      document.createElement(
-        "div"
-      );
-
-    card.className =
-      "card domain-card";
-
-    const isRoot =
-      domain.tld === "root";
-
-    const renderURL =
-      REGISTRY_API +
-      "/render/" +
-      encodeURIComponent(
-        domain.fqdn
-      ) +
-      "/index.html";
+    const isRoot = domain.tld === "root";
+    const renderURL = REGISTRY_API + "/render/" + encodeURIComponent(domain.fqdn) + "/index.html";
 
     card.innerHTML = `
       <div class="domain-type">
         ${isRoot ? ".ROOT ADMIN" : ".SUHS PUBLIC"}
       </div>
-
-      <div class="domain-name">
-        ${escapeHTML(domain.fqdn)}
-      </div>
-
-      <div class="domain-status">
-        ${escapeHTML(domain.status || "unknown")}
-      </div>
-
+      <div class="domain-name">${escapeHTML(domain.fqdn)}</div>
+      <div class="domain-status">${escapeHTML(domain.status || "unknown")}</div>
       <div class="domain-actions">
-
         ${
           isRoot
-            ? `
-              <a
-                class="small-button"
-                href="${renderURL}"
-              >
-                Open Editor
-              </a>
-            `
-            : `
-              <a
-                class="small-button"
-                href="\( {REGISTRY_API}/render/ \){encodeURIComponent(domain.fqdn)}/index.html"
-                target="_blank"
-              >
-                View Site
-              </a>
-            `
+            ? `<a class="small-button" href="${renderURL}">Open Editor</a>`
+            : `<a class="small-button" href="${renderURL}" target="_blank">View Site</a>`
         }
-
       </div>
     `;
 
-    container.appendChild(
-      card
-    );
+    container.appendChild(card);
   }
 }
 
-/* ================================================================
-   PROFILE UPDATE
-================================================================ */
+document.getElementById("saveProfileButton").addEventListener("click", async () => {
+  const status = document.getElementById("profileStatus");
+  setStatus(status, "Saving profile...");
 
-document
-  .getElementById(
-    "saveProfileButton"
-  )
-  .addEventListener(
-    "click",
-    async () => {
+  try {
+    const data = await api("/profile/update", {
+      method: "POST",
+      body: JSON.stringify({
+        display_name: document.getElementById("profileDisplayName").value,
+        bio: document.getElementById("profileBio").value,
+        avatar_url: document.getElementById("profileAvatar").value
+      })
+    });
 
-      const status =
-        document
-          .getElementById(
-            "profileStatus"
-          );
-
-      setStatus(
-        status,
-        "Saving profile..."
-      );
-
-      try {
-
-        const data =
-          await api(
-            "/profile/update",
-            {
-              method:
-                "POST",
-
-              body:
-                JSON.stringify({
-                  display_name:
-                    document
-                      .getElementById(
-                        "profileDisplayName"
-                      )
-                      .value,
-
-                  bio:
-                    document
-                      .getElementById(
-                        "profileBio"
-                      )
-                      .value,
-
-                  avatar_url:
-                    document
-                      .getElementById(
-                        "profileAvatar"
-                      )
-                      .value
-                })
-            }
-          );
-
-        setStatus(
-          status,
-          data.message ||
-            "Profile updated.",
-          "success"
-        );
-
-        await loadAccount();
-
-      } catch (error) {
-
-        setStatus(
-          status,
-          error.message,
-          "error"
-        );
-      }
-
-    }
-  );
-
-/* ================================================================
-   INBOX
-================================================================ */
+    setStatus(status, data.message || "Profile updated.", "success");
+    await loadAccount();
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+});
 
 async function loadInbox() {
+  const list = document.getElementById("mailList");
+  const status = document.getElementById("mailStatus");
 
-  const list =
-    document.getElementById(
-      "mailList"
-    );
-
-  const status =
-    document.getElementById(
-      "mailStatus"
-    );
-
-  if (
-    !currentAccount ||
-    !currentAccount.profile
-  ) {
-
-    list.innerHTML =
-      `<div class="empty">
-        No profile is currently available.
-      </div>`;
-
+  if (!currentAccount || !currentAccount.profile) {
+    list.innerHTML = `<div class="empty">No profile is currently available.</div>`;
     return;
   }
 
-  setStatus(
-    status,
-    "Loading inbox..."
-  );
+  setStatus(status, "Loading inbox...");
 
   try {
-
-    const profileId =
-      currentAccount.profile.id;
-
-    /*
-     * The current /api/account profile SELECT does not
-     * return id, so retrieve it from the authenticated
-     * profile when needed.
-     */
-
-    const profileEmail =
-      currentAccount.profile.owner_email ||
-      currentAccount.user.email;
-
-    const profileResponse =
-      await api(
-        "/profile/" +
-        encodeURIComponent(
-          profileEmail
-        )
-      );
-
-    /*
-     * /profile/:email currently returns only the
-     * public profile and not its numeric ID.
-     *
-     * The current Worker therefore cannot safely
-     * address /api/mail/inbox/:profileId from this
-     * registry page without exposing an ID endpoint.
-     */
-
-    list.innerHTML =
-      `<div class="empty">
-        Inbox endpoint is available in the registry Worker,
-        but the current profile-read endpoint does not expose
-        the profile ID required by /api/mail/inbox/:profileId.
-      </div>`;
-
-    setStatus(
-      status,
-      ""
-    );
-
+    list.innerHTML = `<div class="empty">Inbox endpoint is available in the registry Worker, but the current profile-read endpoint does not expose the profile ID required by /api/mail/inbox/:profileId.</div>`;
+    setStatus(status, "");
   } catch (error) {
-
-    setStatus(
-      status,
-      error.message,
-      "error"
-    );
+    setStatus(status, error.message, "error");
   }
 }
 
-/* ================================================================
-   SEND MAIL
-================================================================ */
+document.getElementById("sendMailButton").addEventListener("click", async () => {
+  const status = document.getElementById("sendMailStatus");
+  const recipient = document.getElementById("recipientEmail").value.trim();
+  const body = document.getElementById("outboundBody").value.trim();
 
-document
-  .getElementById(
-    "sendMailButton"
-  )
-  .addEventListener(
-    "click",
-    async () => {
+  if (!recipient || !body) {
+    setStatus(status, "Recipient and message are required.", "error");
+    return;
+  }
 
-      const status =
-        document
-          .getElementById(
-            "sendMailStatus"
-          );
+  setStatus(status, "Sending...");
 
-      const recipient =
-        document
-          .getElementById(
-            "recipientEmail"
-          )
-          .value
-          .trim();
+  try {
+    const profileId = currentAccount && currentAccount.profile ? currentAccount.profile.id : null;
 
-      const body =
-        document
-          .getElementById(
-            "outboundBody"
-          )
-          .value
-          .trim();
-
-      if (
-        !recipient ||
-        !body
-      ) {
-
-        setStatus(
-          status,
-          "Recipient and message are required.",
-          "error"
-        );
-
-        return;
-      }
-
-      setStatus(
-        status,
-        "Sending..."
-      );
-
-      try {
-
-        /*
-         * The current Worker requires profileId.
-         * /api/account should expose it.
-         */
-
-        const profileId =
-          currentAccount &&
-          currentAccount.profile
-            ? currentAccount.profile.id
-            : null;
-
-        if (!profileId) {
-
-          throw new Error(
-            "Authenticated profile ID is unavailable."
-          );
-        }
-
-        const data =
-          await api(
-            "/api/mail/send",
-            {
-              method:
-                "POST",
-
-              body:
-                JSON.stringify({
-                  profileId:
-                    profileId,
-
-                  recipientEmail:
-                    recipient,
-
-                  body:
-                    body
-                })
-            }
-          );
-
-        setStatus(
-          status,
-          data.success
-            ? "Email sent successfully."
-            : "Email could not be sent.",
-          data.success
-            ? "success"
-            : "error"
-        );
-
-        if (
-          data.success
-        ) {
-
-          document
-            .getElementById(
-              "outboundBody"
-            )
-            .value = "";
-        }
-
-      } catch (error) {
-
-        setStatus(
-          status,
-          error.message,
-          "error"
-        );
-      }
-
+    if (!profileId) {
+      throw new Error("Authenticated profile ID is unavailable.");
     }
-  );
 
-/* ================================================================
-   REFRESH MAIL
-================================================================ */
+    const data = await api("/api/mail/send", {
+      method: "POST",
+      body: JSON.stringify({
+        profileId: profileId,
+        recipientEmail: recipient,
+        body: body
+      })
+    });
 
-document
-  .getElementById(
-    "refreshMailButton"
-  )
-  .addEventListener(
-    "click",
-    loadInbox
-  );
+    setStatus(status, data.success ? "Email sent successfully." : "Email could not be sent.", data.success ? "success" : "error");
 
-/* ================================================================
-   LOGOUT
-================================================================ */
-
-document
-  .getElementById(
-    "logoutButton"
-  )
-  .addEventListener(
-    "click",
-    () => {
-
-      clearAuth();
-
-      currentAccount =
-        null;
-
-      showLoggedOut();
-
-      window.location.hash =
-        "login";
+    if (data.success) {
+      document.getElementById("outboundBody").value = "";
     }
-  );
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+});
 
-/* ================================================================
-   LOGGED-OUT STATE
-================================================================ */
+document.getElementById("refreshMailButton").addEventListener("click", loadInbox);
+
+document.getElementById("logoutButton").addEventListener("click", () => {
+  clearAuth();
+  currentAccount = null;
+  showLoggedOut();
+  window.location.hash = "login";
+});
 
 function showLoggedOut() {
-
-  dashboard.style.display =
-    "none";
-
-  loginSection.style.display =
-    "block";
-
-  currentAccount =
-    null;
+  dashboard.style.display = "none";
+  loginSection.style.display = "block";
+  currentAccount = null;
 }
 
-/* ================================================================
-   REGISTRATION
-================================================================ */
+document.getElementById("registrationForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-document
-  .getElementById(
-    "registrationForm"
-  )
-  .addEventListener(
-    "submit",
-    async event => {
+  const name = document.getElementById("registerDomain").value.trim();
+  const email = document.getElementById("registerEmail").value.trim();
+  const password = document.getElementById("registerPassword").value;
 
-      event.preventDefault();
+  setStatus(registrationStatus, "Registering domain...");
 
-      const name =
-        document
-          .getElementById(
-            "registerDomain"
-          )
-          .value
-          .trim();
+  try {
+    const response = await fetch(REGISTRY_API + "/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
 
-      const email =
-        document
-          .getElementById(
-            "registerEmail"
-          )
-          .value
-          .trim();
+    const data = await response.json();
 
-      const password =
-        document
-          .getElementById(
-            "registerPassword"
-          )
-          .value;
-
-      setStatus(
-        registrationStatus,
-        "Registering domain..."
-      );
-
-      try {
-
-        const response =
-          await fetch(
-            REGISTRY_API +
-              "/register",
-            {
-              method:
-                "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-                  name,
-                  email,
-                  password
-                })
-            }
-          );
-
-        const data =
-          await response.json();
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.message ||
-            data.error ||
-            "Registration failed."
-          );
-        }
-
-        setStatus(
-          registrationStatus,
-          `Registered ${data.public_domain}. Your administrative domain is ${data.admin_domain}.`,
-          "success"
-        );
-
-        /*
-         * Automatically populate login.
-         */
-        document
-          .getElementById(
-            "loginIdentifier"
-          )
-          .value =
-            name;
-
-        document
-          .getElementById(
-            "loginPassword"
-          )
-          .value =
-            password;
-
-        window.location.hash =
-          "login";
-
-      } catch (error) {
-
-        setStatus(
-          registrationStatus,
-          error.message,
-          "error"
-        );
-      }
-
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Registration failed.");
     }
-  );
 
-/* ================================================================
-   ESCAPE HTML
-================================================================ */
+    setStatus(registrationStatus, `Registered ${data.public_domain}. Your administrative domain is ${data.admin_domain}.`, "success");
 
-function escapeHTML(
-  value
-) {
+    document.getElementById("loginIdentifier").value = name;
+    document.getElementById("loginPassword").value = password;
+    window.location.hash = "login";
 
-  return String(
-    value ?? ""
-  )
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+  } catch (error) {
+    setStatus(registrationStatus, error.message, "error");
+  }
+});
+
+function escapeHTML(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
-
-/* ================================================================
-   INITIAL AUTH CHECK
-================================================================ */
 
 async function initialize() {
-
-  const auth =
-    getAuth();
+  const auth = getAuth();
 
   if (!auth) {
-
     showLoggedOut();
-
     return;
   }
 
   try {
-
     await loadAccount();
-
   } catch {
-
     clearAuth();
-
     showLoggedOut();
   }
-
 }
 
 initialize();
