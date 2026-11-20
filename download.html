@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUHS Gateway — make .suhs and .root work in your browser</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1c2333; background: #f6f7f9; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 20px; margin: 32px 0 10px; border-top: 1px solid #d8dce3; padding-top: 24px; }
+  h3 { font-size: 16px; margin: 20px 0 6px; }
+  p { margin: 0 0 12px; }
+  code { background: #e8ebef; padding: 1px 5px; border-radius: 4px; font-size: 14px; }
+  a { color: #0b4ea2; }
+  .lede { font-size: 18px; color: #3c4356; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid #d8dce3; border-radius: 10px; padding: 18px; }
+  .card h3 { margin-top: 0; }
+  .btn { display: inline-block; background: #0b1f3a; color: #fff !important; text-decoration: none; font-weight: 600; padding: 10px 18px; border-radius: 8px; margin-top: 6px; }
+  .btn:hover { background: #16345e; }
+  .btn.secondary { background: #fff; color: #0b1f3a !important; border: 1px solid #0b1f3a; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 14.5px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #d8dce3; vertical-align: top; }
+  th { background: #eef0f3; }
+  ol { margin: 0 0 12px; padding-left: 22px; }
+  ol li { margin-bottom: 6px; }
+  .note, .warn { border-radius: 8px; padding: 12px 14px; margin: 14px 0; font-size: 14.5px; }
+  .note { background: #eaf2fb; border: 1px solid #b7d0ea; }
+  .warn { background: #fdf3e3; border: 1px solid #e8c87a; }
+  .warn strong { color: #7a5200; }
+  .fine { color: #5a6274; font-size: 14px; }
+  footer { margin-top: 40px; color: #5a6274; font-size: 14px; border-top: 1px solid #d8dce3; padding-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>SUHS Gateway</h1>
+  <p class="lede">Make <code>.suhs</code> and <code>.root</code> addresses work in your browser. Install the extension and SUHS registry addresses just work — no settings to change, no VPN, nothing running in the background.</p>
+
+  <p>Every SUHS registry user gets a free site at <code>&lt;name&gt;.sendushomesafe.com</code> and an editor at <code>&lt;name&gt;.sendushomesafe.com/root</code>. This extension lets you reach them by their short names instead:</p>
+  <table>
+    <tr><th>You type</th><th>It opens</th></tr>
+    <tr><td><code>&lt;name&gt;.suhs</code></td><td><code>https://&lt;name&gt;.sendushomesafe.com</code> — the public site</td></tr>
+    <tr><td><code>&lt;name&gt;.root</code></td><td><code>https://&lt;name&gt;.sendushomesafe.com/root</code> — the editor</td></tr>
+  </table>
+  <p>Paths and query strings carry over (<code>muse-test.suhs/about?page=2</code> works), and it handles <code>https://</code> too — the redirect happens before the browser ever tries to resolve the name, so there is no certificate error. Try it after installing: <a href="http://muse-test.suhs/">muse-test.suhs</a> &middot; <a href="http://muse-test.root/">muse-test.root</a></p>
+
+  <h2>Download</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Chromium — Chrome, Edge, Brave, Opera, Vivaldi, Arc</h3>
+      <p>One package, same install steps in all six. Version 1.0.0, Manifest V3.</p>
+      <a class="btn" href="suhs-extension-chromium.zip" download>Download for Chromium (.zip)</a>
+      <p class="fine">Unzip it first — browsers load the extracted folder, not the .zip itself.</p>
+    </div>
+    <div class="card">
+      <h3>Firefox — desktop, and Tor Browser</h3>
+      <p>Version 1.0.0, Manifest V3. The <code>.xpi</code> and the <code>.zip</code> are the same package.</p>
+      <a class="btn" href="suhs-extension-firefox.zip" download>Download for Firefox (.zip)</a><br>
+      <a class="btn secondary" href="suhs-extension-firefox.xpi" download>Download .xpi</a>
+      <p class="fine">This build is <strong>unsigned</strong> — see the Firefox steps below.</p>
+    </div>
+  </div>
+
+  <h2>Install — Chromium (Chrome, Edge, Brave, Opera, Vivaldi, Arc)</h2>
+  <p>All six browsers run the same package and install it the same way. There is no one-click install yet: the extension is not in any store, so you load it yourself in Developer Mode.</p>
+  <ol>
+    <li>Download <code>suhs-extension-chromium.zip</code> above and <strong>extract it</strong> to a folder. Keep that folder — the browser reads the extension from it.</li>
+    <li>Open your browser's extensions page:
+      <table>
+        <tr><th>Browser</th><th>Extensions page</th></tr>
+        <tr><td>Google Chrome</td><td><code>chrome://extensions</code></td></tr>
+        <tr><td>Microsoft Edge</td><td><code>edge://extensions</code></td></tr>
+        <tr><td>Brave</td><td><code>brave://extensions</code></td></tr>
+        <tr><td>Opera / Opera GX</td><td><code>opera://extensions</code></td></tr>
+        <tr><td>Vivaldi</td><td><code>vivaldi://extensions</code></td></tr>
+        <tr><td>Arc</td><td><code>chrome://extensions</code></td></tr>
+      </table>
+    </li>
+    <li>Turn on <strong>Developer mode</strong> (the toggle, usually top-right; in Edge it is in the left sidebar).</li>
+    <li>Click <strong>Load unpacked</strong> and select the extracted folder (the one containing <code>manifest.json</code>).</li>
+    <li>Pin the SUHS Gateway icon in the toolbar if you want it visible. Type <code>muse-test.suhs</code> in the address bar to check it works.</li>
+  </ol>
+  <div class="note"><strong>Honest note:</strong> Chrome shows a warning every time it starts while Developer Mode extensions are loaded. That goes away only with a store listing — the Chrome Web Store charges a one-time $5 developer registration, and Edge and Opera have their own add-on stores. A store listing is the path to one-click install later; for now, Developer Mode is the way.</div>
+
+  <h2>Install — Firefox (desktop)</h2>
+  <p>Firefox still supports temporary installs of unsigned extensions, but they are removed when the browser closes. A permanent install needs a Mozilla-signed <code>.xpi</code>, and this build is unsigned — signing it (free, through addons.mozilla.org) is the next step before a permanent install is possible.</p>
+  <ol>
+    <li>Download <code>suhs-extension-firefox.zip</code> above and <strong>extract it</strong> to a folder.</li>
+    <li>Open <code>about:debugging#/runtime/this-firefox</code> in the address bar.</li>
+    <li>Click <strong>Load Temporary Add-on…</strong> and select <code>manifest.json</code> inside the extracted folder.</li>
+    <li>It works immediately. It will be gone after you restart Firefox — repeat these steps, or wait for the signed build.</li>
+  </ol>
+  <p class="fine">The <code>.xpi</code> file above is the same package in Firefox's install format. It is provided for signing and submission, not for installing as-is: Firefox will refuse an unsigned <code>.xpi</code> for a permanent install.</p>
+
+  <h2>Install — Tor Browser</h2>
+  <p>Tor Browser is built on Firefox, so the Firefox package above is the one to use, installed the same temporary way (<code>about:debugging</code> → Load Temporary Add-on → select <code>manifest.json</code>). It is removed when Tor Browser closes.</p>
+  <div class="warn"><strong>Read this first — the Tor Project's own advice is not to do this.</strong> The Tor Project recommends running Tor Browser with no additional add-ons: any extra extension makes your browser more distinguishable from a stock Tor Browser, which can weaken your anonymity. The SUHS Gateway extension itself sends nothing anywhere new — it only rewrites <code>.suhs</code> / <code>.root</code> addresses to their real <code>sendushomesafe.com</code> pages, which are then fetched over Tor like anything else — but the extension's presence is detectable. Only install it in Tor Browser if you accept that trade-off. If anonymity is the point of the session, use the ordinary Firefox or Chromium install instead.</div>
+
+  <h2>Apple devices — use Orion (free)</h2>
+  <p>There is no Safari package, because Apple charges $99 a year to distribute one — and there doesn't need to be. <a href="https://www.kagi.com/orion">Orion</a> is a free browser for Mac, iPhone, and iPad that installs Chrome and Firefox extensions directly, so the SUHS Gateway extension works in it the same way it works everywhere else. No Apple developer account, no App Store listing, nothing paid to Apple.</p>
+  <ol>
+    <li>Get <a href="https://www.kagi.com/orion">Orion from Kagi</a> — Mac download from their site, iPhone and iPad from the App Store link on that page.</li>
+    <li>Install the SUHS Gateway extension in Orion like any Chrome or Firefox extension. One-click install from the Chrome Web Store or Firefox Add-ons is the next step (the extension isn't listed in any store yet); until then, load the Chromium or Firefox package above in Orion's extension manager.</li>
+    <li>Type <code>muse-test.suhs</code> to check it works.</li>
+  </ol>
+  <div class="note"><strong>Honest note:</strong> Orion's extension support is still partial — Kagi puts it at roughly 70% of the extension APIs — and this extension has not been tested in Orion yet. It only uses simple redirect rules, so it should work, but "should" is not "tested." If it doesn't fire in Orion, try the other package (Chromium vs Firefox).</div>
+  <p class="fine">Other free routes on a Mac: install Firefox or Chrome and use the extension there — Apple has nothing to do with it. In Safari itself, a Mac user can build the Safari version with free Xcode and a free Apple ID and run it via Develop → Allow Unsigned Extensions, but each user has to build it themselves and the setting resets when Safari restarts. On iPhone, SideStore can sideload a Safari build with a free Apple ID (certificates expire every 7 days and refresh automatically). A one-click Safari install for other people is the only thing that needs the $99 a year.</p>
+
+  <h2>Other browsers</h2>
+  <table>
+    <tr><th>Browser</th><th>Status</th></tr>
+    <tr><td>Chrome for Android</td><td>Not supported — Chrome on Android has no extension support at all.</td></tr>
+    <tr><td>Samsung Internet / Samsung Browser (Android)</td><td>Not directly — its own add-ons from the Galaxy Store only. Publishing one needs Samsung's closed-beta developer program (join by request); Root holds a Samsung developer profile, which is the way in. Porting the extension to Samsung's APIs is a later step.</td></tr>
+    <tr><td>Samsung Browser for Windows</td><td>Supported — full Chrome extension support. Same Chromium package, same Developer Mode install as desktop Chrome.</td></tr>
+    <tr><td>Microsoft Edge for Android</td><td>Not supported — installs only from Edge's own curated extension list.</td></tr>
+    <tr><td>Firefox for Android</td><td>Untested — installs add-ons from addons.mozilla.org, so it needs the signed build; the unsigned package here will not install.</td></tr>
+    <tr><td>Vivaldi for Android (8.2+)</td><td>Untested — installs from the Chrome Web Store, so it needs a store listing first.</td></tr>
+    <tr><td>Yandex, Lemur, Quetta (Android)</td><td>Untested — they open the Chrome Web Store, so they need a store listing first.</td></tr>
+    <tr><td>Kiwi Browser (Android)</td><td>Not supported — discontinued in January 2025 and removed from Google Play. Do not install old APKs from random sites.</td></tr>
+  </table>
+
+  <h2>Privacy</h2>
+  <p>The extension only redirects navigation to <code>.suhs</code> and <code>.root</code> addresses. It collects no data, tracks nothing, reads no page content, and changes no settings. Its only permissions are the <code>.suhs</code> / <code>.root</code> addresses themselves and the redirect mechanism.</p>
+
+  <footer>
+    SUHS Gateway v1.0.0 — a SUHS Registry companion. The registry itself lives at <a href="https://suhs-web.pages.dev">suhs-web.pages.dev</a>. Questions: SUHS — Strategic Universal Hardware Systems.
+  </footer>
+</main>
+</body>
+</html>
