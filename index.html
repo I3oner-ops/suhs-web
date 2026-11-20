@@ -825,6 +825,33 @@ footer {
 
   </section>
 
+  <section style="padding:0 0 60px 0">
+
+    <h2>Delete Account</h2>
+
+    <p class="section-copy">
+      Deleting your account permanently removes your profile, your domains
+      (.suhs and .root), your published pages and your virtual inbox.
+      This cannot be undone.
+    </p>
+
+    <div class="card">
+
+      <div class="field">
+        <label for="deletePassword">Confirm with your password</label>
+        <input id="deletePassword" type="password" autocomplete="current-password">
+      </div>
+
+      <button class="button" id="deleteAccountButton" type="button" style="background:#7f1d1d;border-color:#7f1d1d;">
+        Delete My Account
+      </button>
+
+      <div id="deleteAccountStatus" class="status"></div>
+
+    </div>
+
+  </section>
+
 </section>
 
 </main>
@@ -837,7 +864,7 @@ footer {
 
 const REGISTRY_API = "https://suhs.suhs.workers.dev";
 
-const AUTH_STORAGE_KEY = "suhs_basic_auth";
+const AUTH_STORAGE_KEY = "suhs_session";
 
 let currentAccount = null;
 
@@ -846,17 +873,15 @@ const dashboard = document.getElementById("dashboard");
 const loginStatus = document.getElementById("loginStatus");
 const registrationStatus = document.getElementById("registrationStatus");
 
-function makeBasicAuth(identifier, password) {
-  const raw = identifier.trim().toLowerCase() + ":" + password;
-  return "Basic " + btoa(unescape(encodeURIComponent(raw)));
-}
-
+// The editor (.root Control Center) reads the same session key, so storing
+// the Bearer session token here means the editor opens already signed in.
 function getAuth() {
-  return sessionStorage.getItem(AUTH_STORAGE_KEY);
+  const token = sessionStorage.getItem(AUTH_STORAGE_KEY);
+  return token ? "Bearer " + token : null;
 }
 
-function setAuth(auth) {
-  sessionStorage.setItem(AUTH_STORAGE_KEY, auth);
+function setAuth(token) {
+  sessionStorage.setItem(AUTH_STORAGE_KEY, token);
 }
 
 function clearAuth() {
@@ -895,7 +920,7 @@ async function api(path, options = {}) {
   if (response.status === 401) {
     clearAuth();
     showLoggedOut();
-    throw new Error("Authentication expired.");
+    throw new Error(data.message || data.error || "Your session has expired. Please sign in again.");
   }
 
   if (!response.ok) {
@@ -929,8 +954,7 @@ document.getElementById("loginForm").addEventListener("submit", async event => {
       throw new Error(data.message || data.error || "Authentication failed.");
     }
 
-    const basic = makeBasicAuth(identifier, password);
-    setAuth(basic);
+    setAuth(data.token);
 
     setStatus(loginStatus, "Signed in successfully.", "success");
     document.getElementById("loginPassword").value = "";
@@ -1031,7 +1055,7 @@ async function loadInbox() {
   const list = document.getElementById("mailList");
   const status = document.getElementById("mailStatus");
 
-  if (!currentAccount || !currentAccount.profile) {
+  if (!currentAccount || !currentAccount.profile || !currentAccount.profile.id) {
     list.innerHTML = `<div class="empty">No profile is currently available.</div>`;
     return;
   }
@@ -1039,8 +1063,42 @@ async function loadInbox() {
   setStatus(status, "Loading inbox...");
 
   try {
-    list.innerHTML = `<div class="empty">Inbox endpoint is available in the registry Worker, but the current profile-read endpoint does not expose the profile ID required by /api/mail/inbox/:profileId.</div>`;
+    const data = await api("/api/mail/inbox/" + encodeURIComponent(currentAccount.profile.id));
+    const messages = data.messages || [];
     setStatus(status, "");
+
+    if (!messages.length) {
+      list.innerHTML = `<div class="empty">Inbox is empty.</div>`;
+      return;
+    }
+
+    list.innerHTML = "";
+
+    for (const message of messages) {
+      const item = document.createElement("div");
+      item.className = "mail-item" + (message.is_read ? "" : " unread");
+
+      const received = message.received_at
+        ? (typeof message.received_at === "number"
+          ? new Date(message.received_at * 1000).toLocaleString()
+          : String(message.received_at))
+        : "";
+
+      item.innerHTML = `
+        <div class="mail-subject">${escapeHTML(message.subject || "(No Subject)")}</div>
+        <div class="mail-meta">${escapeHTML(message.sender || "")}${received ? " · " + escapeHTML(received) : ""}</div>
+        <div class="mail-body hidden"></div>
+      `;
+
+      const body = item.querySelector(".mail-body");
+      body.textContent = message.body_content || "";
+
+      item.addEventListener("click", () => {
+        body.classList.toggle("hidden");
+      });
+
+      list.appendChild(item);
+    }
   } catch (error) {
     setStatus(status, error.message, "error");
   }
@@ -1086,6 +1144,74 @@ document.getElementById("sendMailButton").addEventListener("click", async () => 
 
 document.getElementById("refreshMailButton").addEventListener("click", loadInbox);
 
+// Account deletion calls the Worker directly (not through api()) so that a
+// wrong password (401) is reported as such instead of signing the user out.
+let deleteAccountArmed = false;
+let deleteAccountArmTimer = null;
+
+document.getElementById("deleteAccountButton").addEventListener("click", async () => {
+  const button = document.getElementById("deleteAccountButton");
+  const status = document.getElementById("deleteAccountStatus");
+  const password = document.getElementById("deletePassword").value;
+
+  if (!password) {
+    setStatus(status, "Enter your password to confirm deletion.", "error");
+    return;
+  }
+
+  if (!deleteAccountArmed) {
+    deleteAccountArmed = true;
+    button.textContent = "Click again to confirm — this cannot be undone";
+    setStatus(status, "This permanently deletes your profile, domains, pages and inbox.");
+
+    clearTimeout(deleteAccountArmTimer);
+    deleteAccountArmTimer = setTimeout(() => {
+      deleteAccountArmed = false;
+      button.textContent = "Delete My Account";
+    }, 10000);
+    return;
+  }
+
+  deleteAccountArmed = false;
+  clearTimeout(deleteAccountArmTimer);
+  button.textContent = "Delete My Account";
+  setStatus(status, "Deleting account...");
+
+  try {
+    const response = await fetch(REGISTRY_API + "/api/account/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": getAuth() || ""
+      },
+      body: JSON.stringify({ confirm: true, password: password })
+    });
+
+    let data = {};
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Account deletion is not available yet — the registry update that adds it has not been deployed.");
+      }
+      throw new Error(data.message || data.error || "Account deletion failed.");
+    }
+
+    clearAuth();
+    currentAccount = null;
+    document.getElementById("deletePassword").value = "";
+    showLoggedOut();
+    setStatus(loginStatus, data.message || "Account deleted.", "success");
+    window.location.hash = "login";
+  } catch (error) {
+    setStatus(status, error.message, "error");
+  }
+});
+
 document.getElementById("logoutButton").addEventListener("click", () => {
   clearAuth();
   currentAccount = null;
@@ -1121,9 +1247,9 @@ document.getElementById("registrationForm").addEventListener("submit", async eve
       throw new Error(data.message || data.error || "Registration failed.");
     }
 
-    setStatus(registrationStatus, `Registered ${data.public_domain}. Your administrative domain is ${data.admin_domain}.`, "success");
+    setStatus(registrationStatus, `Registered ${data.public_domain}. Your administrative domain is ${data.admin_domain} — the .suhs address is your public site and the .root address is where you manage it.`, "success");
 
-    document.getElementById("loginIdentifier").value = name;
+    document.getElementById("loginIdentifier").value = email;
     document.getElementById("loginPassword").value = password;
     window.location.hash = "login";
 

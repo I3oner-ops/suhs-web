@@ -736,7 +736,7 @@ button {
 
     border: 2px solid #3b82f6;
 
-    z-index: 500;
+    z-index: 800;
 
     box-shadow:
         0 0 0 1px rgba(59,130,246,.25);
@@ -785,6 +785,88 @@ button {
     white-space: nowrap;
 }
 
+.pivot-marker {
+    position: absolute;
+
+    width: 12px;
+    height: 12px;
+
+    margin: -6px 0 0 -6px;
+
+    border-radius: 50%;
+
+    background: #f59e0b;
+
+    border: 2px solid #fff;
+
+    pointer-events: none;
+
+    display: none;
+
+    z-index: 810;
+}
+
+.resize-handle {
+    position: absolute;
+
+    right: -7px;
+    bottom: -7px;
+
+    width: 14px;
+    height: 14px;
+
+    background: #3b82f6;
+
+    border: 2px solid #fff;
+    border-radius: 3px;
+
+    cursor: nwse-resize;
+
+    pointer-events: auto;
+
+    z-index: 810;
+}
+
+.rotate-handle {
+    position: absolute;
+
+    left: 50%;
+    top: -32px;
+
+    width: 16px;
+    height: 16px;
+
+    margin-left: -8px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    border: 2px solid #fff;
+
+    cursor: grab;
+
+    pointer-events: auto;
+
+    z-index: 810;
+}
+
+.rotate-handle::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 14px;
+
+    width: 2px;
+    height: 18px;
+
+    margin-left: -1px;
+
+    background: #22c55e;
+}
+
 /* ============================================================================
    RIGHT INSPECTOR
    ============================================================================ */
@@ -801,6 +883,11 @@ button {
 
 .inspector-section {
     border-bottom: 1px solid #222c38;
+}
+
+.inspector-section.flash {
+    outline: 2px solid #3b82f6;
+    outline-offset: -2px;
 }
 
 .inspector-heading {
@@ -1957,6 +2044,21 @@ button {
                         class="selection-label"
                         id="selectionLabel"
                     ></div>
+                    <div
+                        class="pivot-marker"
+                        id="pivotMarker"
+                        title="Pivot point"
+                    ></div>
+                    <div
+                        class="resize-handle"
+                        id="resizeHandle"
+                        title="Drag to resize"
+                    ></div>
+                    <div
+                        class="rotate-handle"
+                        id="rotateHandle"
+                        title="Drag to rotate"
+                    ></div>
                 </div>
 
             </div>
@@ -2332,6 +2434,92 @@ button {
                         </option>
 
                     </select>
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        Rotation (degrees)
+                    </label>
+
+                    <div style="display:flex;gap:7px;">
+
+                        <input
+                            id="animationRotation"
+                            type="number"
+                            value="0"
+                            style="flex:1;"
+                        >
+
+                        <button
+                            class="btn"
+                            id="applyRotationButton"
+                            type="button"
+                        >
+                            Set
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        Scale (%)
+                    </label>
+
+                    <div style="display:flex;gap:7px;">
+
+                        <input
+                            id="animationScale"
+                            type="number"
+                            min="10"
+                            max="500"
+                            value="100"
+                            style="flex:1;"
+                        >
+
+                        <button
+                            class="btn"
+                            id="applyScaleButton"
+                            type="button"
+                        >
+                            Set
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                        Sequence
+                    </label>
+
+                    <div style="display:flex;gap:7px;">
+
+                        <select
+                            id="animationSequenceSelect"
+                            style="flex:1;"
+                        ></select>
+
+                        <button
+                            class="btn"
+                            id="newSequenceButton"
+                            type="button"
+                        >
+                            New
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="sequenceEditor"
+                        style="margin-top:7px;"
+                    ></div>
 
                 </div>
 
@@ -3265,7 +3453,10 @@ button {
 
     <!-- LAYERS -->
 
-    <div class="inspector-section">
+    <div
+        class="inspector-section"
+        id="layersSection"
+    >
 
         <button
             class="inspector-heading"
@@ -3397,6 +3588,46 @@ button {
             >
                 Save Profile
             </button>
+
+            <div
+                class="field"
+                style="margin-top:30px;border-top:1px solid #7f1d1d;padding-top:20px;"
+            >
+
+                <label style="color:#fca5a5;">
+                    Delete Account — Danger Zone
+                </label>
+
+                <p style="color:#94a3b8;font-size:12px;line-height:1.6;">
+                    Deleting your account permanently removes your profile,
+                    your domains (.suhs and .root), your published pages and
+                    your virtual inbox. This cannot be undone.
+                </p>
+
+                <label>
+                    Confirm with your password
+                </label>
+
+                <input
+                    id="deleteAccountPassword"
+                    type="password"
+                    autocomplete="current-password"
+                >
+
+            </div>
+
+            <button
+                class="btn"
+                id="deleteAccountButton"
+                style="background:#7f1d1d;border-color:#7f1d1d;width:100%;margin-top:7px;"
+            >
+                Delete My Account
+            </button>
+
+            <div
+                id="deleteAccountStatus"
+                style="margin-top:10px;color:#94a3b8;font-size:12px;line-height:1.5;"
+            ></div>
 
         </div>
 
@@ -3591,6 +3822,75 @@ button {
 </div>
 
 
+<!-- ============================================================================
+     INLINE PROMPT DIALOG (replaces native window.prompt, which browsers
+     suppress under popup blocking / headless mode)
+     ============================================================================ -->
+
+<div
+    id="inlinePromptModal"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        z-index:4000;
+        background:rgba(0,0,0,.65);
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    "
+>
+
+    <div
+        style="
+            width:100%;
+            max-width:420px;
+            background:#0d131b;
+            border:1px solid #334155;
+            border-radius:10px;
+            padding:20px;
+            box-shadow:0 30px 100px rgba(0,0,0,.7);
+        "
+    >
+
+        <h2
+            id="inlinePromptTitle"
+            style="margin-top:0;"
+        >
+            Enter a value
+        </h2>
+
+        <div class="field">
+
+            <input
+                id="inlinePromptInput"
+            >
+
+        </div>
+
+        <div style="display:flex;gap:8px;">
+
+            <button
+                class="btn primary"
+                id="inlinePromptOkButton"
+            >
+                OK
+            </button>
+
+            <button
+                class="btn"
+                id="inlinePromptCancelButton"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
 
 /* ============================================================================
@@ -3650,6 +3950,9 @@ let selectedElement =
 let selectedElementPath =
     null;
 
+let pendingSelectionPath =
+    null;
+
 let editorMode =
     "visual";
 
@@ -3695,8 +3998,11 @@ let animationStart =
 let recordedAnimations =
     [];
 
-let animationSequence =
+let animationSequences =
     [];
+
+let activeSequenceId =
+    null;
 
 let messages =
     [];
@@ -4688,7 +4994,11 @@ function renderPageSelect() {
                 page.content_key;
 
             option.textContent =
-                page.content_key;
+                page.has_published ===
+                    1
+                    ? page.content_key
+                    : page.content_key +
+                        " (not published)";
 
             select.appendChild(
                 option
@@ -4718,6 +5028,10 @@ $("pageSelect")
 
 
 function loadCurrentPage() {
+
+    // A different page has no selection to restore.
+    pendingSelectionPath =
+        null;
 
     const page =
         sitePages.find(
@@ -4956,6 +5270,21 @@ window.addEventListener(
 
         if (type === "ready") {
 
+            restoreAnimationsFromPage();
+
+            if (pendingSelectionPath) {
+
+                const pathToRestore =
+                    pendingSelectionPath;
+
+                pendingSelectionPath =
+                    null;
+
+                selectElementByPath(
+                    pathToRestore
+                );
+            }
+
             updateSelectionBox();
 
             return;
@@ -4988,14 +5317,6 @@ window.addEventListener(
             ) {
 
                 editSelectedText();
-            }
-
-            if (
-                activeTool ===
-                "pin"
-            ) {
-
-                setPinFromElementCenter();
             }
 
             return;
@@ -5060,19 +5381,44 @@ function resolveElementPath(
                 pieces[1]
             );
 
-        const candidates =
+        const children =
             Array.from(
                 current.children
-            )
-                .filter(
+            );
+
+        // Paths are built by counting ALL previous element siblings, so
+        // the index is the position among all children, not among
+        // same-tag siblings. (Indexing same-tag siblings here used to
+        // resolve the wrong element — or nothing at all — whenever an
+        // element had previous siblings of a different tag.)
+        let next =
+            children[index] ||
+            null;
+
+        if (
+            next &&
+            next.tagName
+                .toLowerCase() !==
+            tag
+        ) {
+
+            // Fall back to same-tag indexing for paths recorded by
+            // any older scheme.
+            const sameTag =
+                children.filter(
                     child =>
                         child.tagName
                             .toLowerCase() ===
                         tag
                 );
 
+            next =
+                sameTag[index] ||
+                null;
+        }
+
         current =
-            candidates[index];
+            next;
 
         if (!current) {
             return null;
@@ -5104,6 +5450,8 @@ function selectElementByPath(
 
     updateInspector();
 
+    syncStudioTransformInputs();
+
     updateSelectionBox();
 
     renderLayers();
@@ -5134,23 +5482,34 @@ function updateSelectionBox() {
         $("canvasFrame")
             .getBoundingClientRect();
 
+    const iframeRect =
+        $("siteFrame")
+            .getBoundingClientRect();
+
     $("selectionBox")
         .style.display =
         "block";
 
+    // The element rect is in the iframe viewport's coordinates, while the
+    // frame rect is in the parent page's coordinates. Convert through the
+    // iframe's own rect — subtracting the frame rect directly mixes the
+    // two systems and draws the outline far above (or below) the object
+    // once anything has scrolled.
     $("selectionBox")
         .style.left =
         (
-            rect.left -
-            frameRect.left
+            iframeRect.left -
+            frameRect.left +
+            rect.left
         ) +
         "px";
 
     $("selectionBox")
         .style.top =
         (
-            rect.top -
-            frameRect.top
+            iframeRect.top -
+            frameRect.top +
+            rect.top
         ) +
         "px";
 
@@ -5170,6 +5529,8 @@ function updateSelectionBox() {
         selectedElement.tagName
             .toLowerCase() +
         ">";
+
+    updatePivotMarker();
 }
 
 
@@ -5848,6 +6209,121 @@ function updatePivot() {
         `${x}% ${y}%`;
 
     syncDocumentFromFrame();
+
+    updatePivotMarker();
+}
+
+
+function updatePivotMarker() {
+
+    const marker =
+        $("pivotMarker");
+
+    if (!marker) {
+        return;
+    }
+
+    if (
+        !selectedElement ||
+        !selectedElement.isConnected
+    ) {
+
+        marker.style.display =
+            "none";
+
+        return;
+    }
+
+    const x =
+        Number(
+            $("pivotX").value
+        ) || 50;
+
+    const y =
+        Number(
+            $("pivotY").value
+        ) || 50;
+
+    marker.style.display =
+        "block";
+
+    marker.style.left =
+        x +
+        "%";
+
+    marker.style.top =
+        y +
+        "%";
+}
+
+
+function setPinAtPoint(
+    clientX,
+    clientY
+) {
+
+    if (!selectedElement) {
+
+        showStatus(
+            "Select an object first.",
+            "error"
+        );
+
+        return;
+    }
+
+    const rect =
+        selectedElement.getBoundingClientRect();
+
+    if (
+        !rect.width ||
+        !rect.height
+    ) {
+        return;
+    }
+
+    const x =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                Math.round(
+                    (clientX - rect.left) /
+                    rect.width *
+                    100
+                )
+            )
+        );
+
+    const y =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                Math.round(
+                    (clientY - rect.top) /
+                    rect.height *
+                    100
+                )
+            )
+        );
+
+    $("pivotX").value =
+        x;
+
+    $("pivotY").value =
+        y;
+
+    updatePivot();
+
+    showStatus(
+        "Pivot set to " +
+        x +
+        "%, " +
+        y +
+        "%.",
+        "success"
+    );
 }
 
 
@@ -6339,6 +6815,213 @@ function rotateSelected(
 }
 
 
+function readInlineTransform() {
+
+    const transform =
+        selectedElement
+            ? selectedElement.style.transform ||
+                ""
+            : "";
+
+    const rotateMatch =
+        transform.match(
+            /rotate\((-?[0-9.]+)deg\)/
+        );
+
+    const scaleMatch =
+        transform.match(
+            /scale\((-?[0-9.]+)\)/
+        );
+
+    return {
+        rotate:
+            rotateMatch
+                ? Number(
+                    rotateMatch[1]
+                )
+                : 0,
+
+        scale:
+            scaleMatch
+                ? Number(
+                    scaleMatch[1]
+                )
+                : 1
+    };
+}
+
+
+function applySelectedTransform(
+    rotate,
+    scale
+) {
+
+    if (!selectedElement) {
+        return;
+    }
+
+    const existing =
+        selectedElement.style.transform ||
+        "";
+
+    const rest =
+        existing
+            .replace(
+                /rotate\([^)]*\)/g,
+                ""
+            )
+            .replace(
+                /scale\([^)]*\)/g,
+                ""
+            )
+            .trim();
+
+    const parts =
+        [];
+
+    if (rotate) {
+
+        parts.push(
+            `rotate(${rotate}deg)`
+        );
+    }
+
+    if (
+        scale &&
+        scale !== 1
+    ) {
+
+        parts.push(
+            `scale(${scale})`
+        );
+    }
+
+    selectedElement.style.transform =
+        (
+            rest +
+            " " +
+            parts.join(" ")
+        ).trim();
+
+    selectedElement.dataset
+        .suhsRotation =
+        rotate;
+
+    selectedElement.dataset
+        .suhsScale =
+        scale;
+}
+
+
+function setSelectedRotation(
+    degrees
+) {
+
+    if (!selectedElement) {
+
+        showStatus(
+            "Select an object first.",
+            "error"
+        );
+
+        return;
+    }
+
+    saveUndoState();
+
+    const current =
+        readInlineTransform();
+
+    applySelectedTransform(
+        degrees,
+        current.scale
+    );
+
+    syncDocumentFromFrame();
+
+    updateSelectionBox();
+}
+
+
+function setSelectedScale(
+    percent
+) {
+
+    if (!selectedElement) {
+
+        showStatus(
+            "Select an object first.",
+            "error"
+        );
+
+        return;
+    }
+
+    const scale =
+        Math.max(
+            0.1,
+            Math.min(
+                5,
+                Number(percent) / 100
+            )
+        );
+
+    saveUndoState();
+
+    const current =
+        readInlineTransform();
+
+    applySelectedTransform(
+        current.rotate,
+        scale
+    );
+
+    syncDocumentFromFrame();
+
+    updateSelectionBox();
+
+    showStatus(
+        "Scale set to " +
+        Math.round(scale * 100) +
+        "%.",
+        "success"
+    );
+}
+
+
+function syncStudioTransformInputs() {
+
+    if (!selectedElement) {
+        return;
+    }
+
+    const current =
+        readInlineTransform();
+
+    const rotationInput =
+        $("animationRotation");
+
+    const scaleInput =
+        $("animationScale");
+
+    if (rotationInput) {
+
+        rotationInput.value =
+            Math.round(
+                current.rotate * 10
+            ) / 10;
+    }
+
+    if (scaleInput) {
+
+        scaleInput.value =
+            Math.round(
+                current.scale * 100
+            );
+    }
+}
+
+
 function preserveTransforms(
     existing,
     rotation
@@ -6515,7 +7198,64 @@ function bindEditorControls() {
 
     $("addSequenceButton")
         .onclick =
-        addAnimationToSequence;
+        () => addAnimationToSequence();
+
+    $("applyRotationButton")
+        .onclick =
+        () => {
+
+            setSelectedRotation(
+                Number(
+                    $("animationRotation")
+                        .value
+                ) ||
+                0
+            );
+        };
+
+    $("applyScaleButton")
+        .onclick =
+        () => {
+
+            setSelectedScale(
+                Number(
+                    $("animationScale")
+                        .value
+                ) ||
+                100
+            );
+        };
+
+    $("animationSequenceSelect")
+        .onchange =
+        event => {
+
+            activeSequenceId =
+                event.target.value ||
+                null;
+
+            renderSequenceEditor();
+        };
+
+    $("newSequenceButton")
+        .onclick =
+        () => {
+
+            createAnimationSequence();
+
+            renderAnimationTimeline();
+
+            writeAnimationData(
+                getFrameDocument()
+            );
+
+            syncDocumentFromFrame();
+
+            showStatus(
+                "New sequence created.",
+                "success"
+            );
+        };
 
     $("clearPaintingButton")
         .onclick =
@@ -6575,6 +7315,46 @@ function activateTool(
             .classList.add(
                 "active"
             );
+
+        return;
+    }
+
+    if (tool === "layers") {
+
+        renderLayers();
+
+        const section =
+            $("layersSection");
+
+        if (section) {
+
+            section.scrollIntoView(
+                {
+                    behavior:
+                        "smooth",
+
+                    block:
+                        "start"
+                }
+            );
+
+            section.classList.add(
+                "flash"
+            );
+
+            setTimeout(
+                () => section.classList
+                    .remove(
+                        "flash"
+                    ),
+                1200
+            );
+        }
+
+        showStatus(
+            "Layer list shown in the inspector.",
+            "success"
+        );
 
         return;
     }
@@ -7922,6 +8702,20 @@ function captureElementState() {
     const rect =
         selectedElement.getBoundingClientRect();
 
+    // left/top only move an element that is positioned; an unpositioned
+    // element sits at its natural spot, which is an offset of 0. Recording
+    // "0px" instead of "" means the keyframes replay the move instead of
+    // starting from the element's already-moved position.
+    const positioned =
+        [
+            "relative",
+            "absolute",
+            "fixed",
+            "sticky"
+        ].includes(
+            style.position
+        );
+
     return {
         width:
             rect.width,
@@ -7938,17 +8732,65 @@ function captureElementState() {
             "1",
 
         left:
-            style.left ||
-            "",
+            positioned
+                ? style.left || "0px"
+                : "0px",
 
         top:
-            style.top ||
-            "",
+            positioned
+                ? style.top || "0px"
+                : "0px",
 
         backgroundColor:
             style.backgroundColor ||
             ""
     };
+}
+
+
+function animationChanged(
+    from,
+    to
+) {
+
+    const offset =
+        value =>
+            value ||
+            "0px";
+
+    const transform =
+        value =>
+            value ||
+            "none";
+
+    return (
+        transform(
+            from.transform
+        ) !==
+        transform(
+            to.transform
+        ) ||
+        from.opacity !==
+            to.opacity ||
+        from.width !==
+            to.width ||
+        from.height !==
+            to.height ||
+        offset(
+            from.left
+        ) !==
+        offset(
+            to.left
+        ) ||
+        offset(
+            from.top
+        ) !==
+        offset(
+            to.top
+        ) ||
+        from.backgroundColor !==
+            to.backgroundColor
+    );
 }
 
 
@@ -7985,8 +8827,31 @@ function stopAnimationRecording() {
         return;
     }
 
+    if (
+        !animationChanged(
+            animationStart,
+            end
+        )
+    ) {
+
+        showStatus(
+            "No movement, rotation or resize detected — nothing recorded.",
+            "error"
+        );
+
+        return;
+    }
+
     const animation =
         {
+            id:
+                "suhsAnim_" +
+                Date.now() +
+                "_" +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 7),
+
             name:
                 $("animationName")
                     .value
@@ -8052,16 +8917,14 @@ function installAnimation(
     }
 
     const animationId =
-        "suhsAnim_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2,7);
+        animation.id;
 
-    element.dataset
-        .suhsAnimation =
-        animationId;
+    // Replace any keyframes previously generated for this animation so a
+    // re-install never leaves duplicate <style> blocks behind.
+    removeGeneratedAnimationStyle(
+        doc,
+        animationId
+    );
 
     const style =
         doc.createElement(
@@ -8072,131 +8935,745 @@ function installAnimation(
         .suhsGeneratedAnimation =
         animationId;
 
-    const fromTransform =
-        animation.from.transform ||
-        "none";
-
-    const toTransform =
-        animation.to.transform ||
-        "none";
-
     style.textContent =
-        `
-@keyframes ${animationId} {
-    from {
-        transform:${fromTransform};
-        opacity:${animation.from.opacity};
-        width:${animation.from.width}px;
-        height:${animation.from.height}px;
-    }
-
-    to {
-        transform:${toTransform};
-        opacity:${animation.to.opacity};
-        width:${animation.to.width}px;
-        height:${animation.to.height}px;
-    }
-}
-
-[data-suhs-animation="${animationId}"] {
-    animation-duration:${animation.duration}ms;
-    animation-timing-function:${animation.easing};
-    animation-fill-mode:both;
-}
-
-[data-suhs-animation="${animationId}"]:hover {
-}
-`;
+        buildAnimationCss(
+            animation
+        );
 
     doc.head.appendChild(
         style
     );
 
+    // Hover is NOT a CSS :hover rule: a move animation jumps the
+    // element to its "from" position, which takes it out from under the
+    // pointer and cancels the hover, so a normal-sized move flickers
+    // and never plays through. Hover is wired by the runtime script
+    // instead (see animationRuntimeSource): it fires once on
+    // mouseenter and plays to completion. No style block is emitted
+    // here; removeGeneratedAnimationStyle still deletes any _hover
+    // block left in a page saved before this fix, on re-install.
+
+    applyAnimationToElement(
+        element,
+        animation
+    );
+
+    writeAnimationData(
+        doc
+    );
+
+    ensureAnimationRuntime(
+        doc
+    );
+
+    wireAnimationsInFrame();
+
+    syncDocumentFromFrame();
+}
+
+
+/* ============================================================================
+   ANIMATION SERIALIZATION
+   ============================================================================ */
+
+// Keyframes for one animation step. Every captured property is included —
+// the old keyframes only animated transform/opacity/width/height, so a
+// recorded move (left/top) replayed as nothing at all.
+function buildAnimationDeclarations(
+    state
+) {
+
+    const declarations =
+        [];
+
+    declarations.push(
+        "transform:" +
+        (
+            state.transform ||
+            "none"
+        ) +
+        ";"
+    );
+
+    declarations.push(
+        "opacity:" +
+        (
+            state.opacity ||
+            "1"
+        ) +
+        ";"
+    );
+
+    if (state.width) {
+
+        declarations.push(
+            "width:" +
+            state.width +
+            "px;"
+        );
+    }
+
+    if (state.height) {
+
+        declarations.push(
+            "height:" +
+            state.height +
+            "px;"
+        );
+    }
+
+    if (state.left) {
+
+        declarations.push(
+            "left:" +
+            state.left +
+            ";"
+        );
+    }
+
+    if (state.top) {
+
+        declarations.push(
+            "top:" +
+            state.top +
+            ";"
+        );
+    }
+
+    if (state.backgroundColor) {
+
+        declarations.push(
+            "background-color:" +
+            state.backgroundColor +
+            ";"
+        );
+    }
+
+    return declarations.join(
+        ""
+    );
+}
+
+
+function buildAnimationCss(
+    animation
+) {
+
+    return `
+@keyframes ${animation.id} {
+    from {
+        ${buildAnimationDeclarations(animation.from)}
+    }
+    to {
+        ${buildAnimationDeclarations(animation.to)}
+    }
+}
+`;
+}
+
+
+function removeGeneratedAnimationStyle(
+    doc,
+    animationId
+) {
+
+    if (!doc) {
+        return;
+    }
+
+    doc.querySelectorAll(
+        "style[data-suhs-generated-animation]"
+    ).forEach(
+        style => {
+
+            if (
+                style.dataset
+                    .suhsGeneratedAnimation ===
+                animationId ||
+                style.dataset
+                    .suhsGeneratedAnimation ===
+                animationId +
+                "_hover"
+            ) {
+
+                style.remove();
+            }
+        }
+    );
+}
+
+
+function splitInlineList(
+    value
+) {
+
+    return (value || "")
+        .split(",")
+        .map(
+            part =>
+                part.trim()
+        )
+        .filter(
+            Boolean
+        );
+}
+
+
+function appendInlineAnimation(
+    element,
+    animation,
+    delayMs
+) {
+
+    const names =
+        splitInlineList(
+            element.style.animationName
+        );
+
+    const durations =
+        splitInlineList(
+            element.style.animationDuration
+        );
+
+    const easings =
+        splitInlineList(
+            element.style.animationTimingFunction
+        );
+
+    const delays =
+        splitInlineList(
+            element.style.animationDelay
+        );
+
+    const fills =
+        splitInlineList(
+            element.style.animationFillMode
+        );
+
+    const index =
+        names.indexOf(
+            animation.id
+        );
+
+    const duration =
+        animation.duration +
+        "ms";
+
+    const easing =
+        animation.easing ||
+        "ease";
+
+    const delay =
+        (delayMs || 0) +
+        "ms";
+
+    if (index >= 0) {
+
+        durations[index] =
+            duration;
+
+        easings[index] =
+            easing;
+
+        delays[index] =
+            delay;
+
+        fills[index] =
+            "both";
+
+    } else {
+
+        names.push(
+            animation.id
+        );
+
+        durations.push(
+            duration
+        );
+
+        easings.push(
+            easing
+        );
+
+        delays.push(
+            delay
+        );
+
+        fills.push(
+            "both"
+        );
+    }
+
+    element.style.animationName =
+        names.join(", ");
+
+    element.style.animationDuration =
+        durations.join(", ");
+
+    element.style.animationTimingFunction =
+        easings.join(", ");
+
+    element.style.animationDelay =
+        delays.join(", ");
+
+    element.style.animationFillMode =
+        fills.join(", ");
+}
+
+
+function removeInlineAnimation(
+    element,
+    animationId
+) {
+
+    const names =
+        splitInlineList(
+            element.style.animationName
+        );
+
+    const index =
+        names.indexOf(
+            animationId
+        );
+
+    if (index < 0) {
+        return;
+    }
+
+    const lists =
+        [
+            "animationDuration",
+            "animationTimingFunction",
+            "animationDelay",
+            "animationFillMode"
+        ].map(
+            property =>
+                splitInlineList(
+                    element.style[property]
+                )
+        );
+
+    names.splice(
+        index,
+        1
+    );
+
+    lists.forEach(
+        list =>
+            list.splice(
+                index,
+                1
+            )
+    );
+
+    element.style.animationName =
+        names.join(", ");
+
+    element.style.animationDuration =
+        lists[0].join(", ");
+
+    element.style.animationTimingFunction =
+        lists[1].join(", ");
+
+    element.style.animationDelay =
+        lists[2].join(", ");
+
+    element.style.animationFillMode =
+        lists[3].join(", ");
+}
+
+
+function applyAnimationToElement(
+    element,
+    animation
+) {
+
+    // Track every animation id on this element so the published-page
+    // runtime can find them all.
+    const ids =
+        (element.dataset.suhsAnimations || "")
+            .split(" ")
+            .filter(
+                Boolean
+            );
+
+    if (
+        !ids.includes(
+            animation.id
+        )
+    ) {
+
+        ids.push(
+            animation.id
+        );
+    }
+
+    element.dataset.suhsAnimations =
+        ids.join(" ");
+
+    element.dataset.suhsAnimation =
+        animation.id;
+
+    // Load-triggered animations play on their own. Hover, click and
+    // blank-page triggers are wired by the runtime script below: hover
+    // fires once on mouseenter and plays to completion, so a move that
+    // takes the element out from under the pointer cannot cancel it
+    // the way a CSS :hover rule could.
     if (
         animation.trigger ===
         "load"
     ) {
 
-        element.style.animationName =
-            animationId;
+        appendInlineAnimation(
+            element,
+            animation,
+            0
+        );
+    }
+}
 
+
+/* ============================================================================
+   ANIMATION DATA BLOCK + PUBLISHED-PAGE RUNTIME
+   ============================================================================ */
+
+// The recorded animations and sequences are stored as JSON inside the
+// saved page itself, so they survive reloads and the editor can restore
+// its timeline from the page. The runtime script reads the same block to
+// wire click / blank-page triggers on the published site — event
+// listeners added in the editor cannot be saved into HTML.
+function animationDataElement(
+    doc
+) {
+
+    return doc.querySelector(
+        'script[data-suhs-animations][type="application/json"]'
+    );
+}
+
+
+function writeAnimationData(
+    doc
+) {
+
+    if (!doc) {
+        return;
     }
 
-    if (
-        animation.trigger ===
-        "hover"
-    ) {
+    let block =
+        animationDataElement(
+            doc
+        );
 
-        const hoverStyle =
+    if (!block) {
+
+        block =
             doc.createElement(
-                "style"
+                "script"
             );
 
-        hoverStyle.dataset
-            .suhsGeneratedAnimation =
-            animationId +
-            "_hover";
+        block.type =
+            "application/json";
 
-        hoverStyle.textContent =
-            `
-[data-suhs-animation="${animationId}"]:hover {
-    animation-name:${animationId};
-}
-`;
+        block.setAttribute(
+            "data-suhs-animations",
+            ""
+        );
 
         doc.head.appendChild(
-            hoverStyle
+            block
         );
-
     }
 
-    if (
-        animation.trigger ===
-        "click"
-    ) {
+    block.textContent =
+        JSON.stringify(
+            {
+                animations:
+                    recordedAnimations,
 
-        element.addEventListener(
-            "click",
-            () => {
-
-                element.style.animation =
-                    "none";
-
-                void element.offsetWidth;
-
-                element.style.animation =
-                    `${animationId} ${animation.duration}ms ${animation.easing} both`;
+                sequences:
+                    animationSequences
             }
         );
+}
+
+
+function readAnimationData(
+    doc
+) {
+
+    const block =
+        doc
+            ? animationDataElement(
+                doc
+            )
+            : null;
+
+    if (!block) {
+        return null;
     }
+
+    try {
+
+        return JSON.parse(
+            block.textContent ||
+            "{}"
+        );
+
+    } catch {
+
+        return null;
+    }
+}
+
+
+function restoreAnimationsFromPage() {
+
+    const doc =
+        getFrameDocument();
+
+    const data =
+        readAnimationData(
+            doc
+        );
+
+    if (!data) {
+
+        recordedAnimations =
+            [];
+
+        animationSequences =
+            [];
+
+        activeSequenceId =
+            null;
+
+        renderAnimationTimeline();
+
+        return;
+    }
+
+    recordedAnimations =
+        Array.isArray(
+            data.animations
+        )
+            ? data.animations
+            : [];
+
+    animationSequences =
+        Array.isArray(
+            data.sequences
+        )
+            ? data.sequences
+            : [];
+
+    activeSequenceId =
+        animationSequences.length
+            ? animationSequences[
+                animationSequences.length - 1
+            ].id
+            : null;
+
+    // Re-install any animation whose inline style was lost (for example
+    // by a hand edit in HTML mode) so the Studio list and the page agree.
+    recordedAnimations.forEach(
+        animation => {
+
+            const element =
+                resolveElementPath(
+                    animation.path
+                );
+
+            if (
+                element &&
+                !element.style.animation
+            ) {
+
+                installAnimation(
+                    animation
+                );
+            }
+        }
+    );
+
+    renderAnimationTimeline();
+}
+
+
+function animationRuntimeSource() {
+
+    return `(function(){
+var wired = window.__suhsWiredAnimations || (window.__suhsWiredAnimations = {});
+function readData(){
+var block = document.querySelector('script[data-suhs-animations][type="application/json"]');
+if(!block) return null;
+try { return JSON.parse(block.textContent || "{}"); } catch(e) { return null; }
+}
+function findElement(animation){
+var el = document.querySelector('[data-suhs-animations~="' + animation.id + '"]');
+if(el) return el;
+var parts = (animation.path || "").split("/");
+var current = document.documentElement;
+for(var i=0;i<parts.length;i++){
+var pieces = parts[i].split(":");
+var tag = pieces[0];
+var index = Number(pieces[1]);
+var children = Array.prototype.slice.call(current.children);
+var next = children[index] || null;
+if(next && next.tagName.toLowerCase() !== tag){
+var same = children.filter(function(c){ return c.tagName.toLowerCase() === tag; });
+next = same[index] || null;
+}
+current = next;
+if(!current) return null;
+}
+return current;
+}
+function stateToKeyframe(state){
+var frame = {};
+if(state.transform) frame.transform = state.transform;
+if(state.opacity) frame.opacity = state.opacity;
+if(state.width) frame.width = state.width + "px";
+if(state.height) frame.height = state.height + "px";
+if(state.left) frame.left = state.left;
+if(state.top) frame.top = state.top;
+if(state.backgroundColor) frame.backgroundColor = state.backgroundColor;
+return frame;
+}
+function replay(element, animation){
+var frames = [stateToKeyframe(animation.from || {}), stateToKeyframe(animation.to || {})];
+return element.animate(frames, {duration: animation.duration, easing: animation.easing || "ease", fill: "both"});
+}
+function wire(){
+var data = readData();
+if(!data || !data.animations) return;
+data.animations.forEach(function(animation){
+if(wired[animation.id]) return;
+var element = findElement(animation);
+if(!element) return;
+if(animation.trigger === "click"){
+wired[animation.id] = true;
+element.addEventListener("click", function(){ replay(element, animation); });
+} else if(animation.trigger === "blank"){
+wired[animation.id] = true;
+document.body.addEventListener("click", function(event){
+if(event.target !== element) replay(element, animation);
+});
+} else if(animation.trigger === "hover"){
+wired[animation.id] = true;
+var playing = null;
+element.addEventListener("mouseenter", function(){
+if(playing && (playing.playState === "running" || playing.playState === "pending")) return;
+playing = replay(element, animation);
+playing.onfinish = function(){
+if(!element.matches(":hover")) playing.cancel();
+};
+});
+element.addEventListener("mouseleave", function(){
+if(playing && playing.playState === "finished") playing.cancel();
+});
+} else {
+wired[animation.id] = true;
+}
+});
+}
+window.__suhsWireAnimations = wire;
+if(document.readyState === "loading"){
+document.addEventListener("DOMContentLoaded", wire);
+} else {
+wire();
+}
+})();`;
+}
+
+
+function ensureAnimationRuntime(
+    doc
+) {
+
+    if (!doc) {
+        return;
+    }
+
+    const existing =
+        doc.querySelector(
+            "script[data-suhs-runtime]"
+        );
+
+    const source =
+        animationRuntimeSource();
+
+    // The runtime is owned by the editor: if a page was saved with an
+    // older runtime, replace it on the next save so trigger fixes reach
+    // already-published pages instead of staying baked into their HTML.
+    // Appending a fresh script element re-runs it, so the editor
+    // preview picks the new wiring up in the same session; the
+    // window.__suhsWiredAnimations map survives, so click / blank
+    // triggers already wired are not wired twice.
+    if (existing) {
+
+        if (
+            existing.textContent !==
+            source
+        ) {
+
+            const replacement =
+                doc.createElement(
+                    "script"
+                );
+
+            replacement.setAttribute(
+                "data-suhs-runtime",
+                ""
+            );
+
+            replacement.textContent =
+                source;
+
+            existing.replaceWith(
+                replacement
+            );
+        }
+
+        return;
+    }
+
+    const script =
+        doc.createElement(
+            "script"
+        );
+
+    script.setAttribute(
+        "data-suhs-runtime",
+        ""
+    );
+
+    script.textContent =
+        animationRuntimeSource();
+
+    doc.head.appendChild(
+        script
+    );
+}
+
+
+function wireAnimationsInFrame() {
+
+    const frame =
+        $("siteFrame");
+
+    const view =
+        frame &&
+        frame.contentWindow;
 
     if (
-        animation.trigger ===
-        "blank"
+        view &&
+        typeof view.__suhsWireAnimations ===
+        "function"
     ) {
 
-        doc.body.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target !==
-                    element
-                ) {
-
-                    element.style.animation =
-                        "none";
-
-                    void element.offsetWidth;
-
-                    element.style.animation =
-                        `${animationId} ${animation.duration}ms ${animation.easing} both`;
-                }
-            }
-        );
+        view.__suhsWireAnimations();
     }
-
-    syncDocumentFromFrame();
 }
 
 
@@ -8204,7 +9681,43 @@ function installAnimation(
    ANIMATION SEQUENCE
    ============================================================================ */
 
-function addAnimationToSequence() {
+function createAnimationSequence() {
+
+    const sequence =
+        {
+            id:
+                "suhsSeq_" +
+                Date.now() +
+                "_" +
+                Math.random()
+                    .toString(36)
+                    .slice(2, 7),
+
+            name:
+                "Sequence " +
+                (
+                    animationSequences.length +
+                    1
+                ),
+
+            steps:
+                []
+        };
+
+    animationSequences.push(
+        sequence
+    );
+
+    activeSequenceId =
+        sequence.id;
+
+    return sequence;
+}
+
+
+function addAnimationToSequence(
+    animationId
+) {
 
     if (!recordedAnimations.length) {
 
@@ -8217,164 +9730,173 @@ function addAnimationToSequence() {
     }
 
     const animation =
+        (
+            animationId
+                ? recordedAnimations.find(
+                    item =>
+                        item.id ===
+                        animationId
+                )
+                : null
+        ) ||
         recordedAnimations[
             recordedAnimations.length - 1
         ];
 
-    animationSequence.push(
-        animation
+    if (!animation) {
+        return;
+    }
+
+    // Append to the active sequence instead of starting a new one on
+    // every click. A new sequence is only created when none exists yet.
+    let sequence =
+        animationSequences.find(
+            item =>
+                item.id ===
+                activeSequenceId
+        ) ||
+        null;
+
+    if (!sequence) {
+
+        sequence =
+            createAnimationSequence();
+    }
+
+    if (
+        sequence.steps.includes(
+            animation.id
+        )
+    ) {
+
+        showStatus(
+            "That animation is already in " +
+            sequence.name +
+            ".",
+            "error"
+        );
+
+        return;
+    }
+
+    sequence.steps.push(
+        animation.id
+    );
+
+    installSequence(
+        sequence
     );
 
     renderAnimationTimeline();
 
-    installSequence();
+    writeAnimationData(
+        getFrameDocument()
+    );
+
+    syncDocumentFromFrame();
 
     showStatus(
-        "Animation added to sequence.",
+        "Animation added to " +
+        sequence.name +
+        ".",
         "success"
     );
 }
 
 
-function installSequence() {
+function reapplyStandaloneAnimation(
+    animationId
+) {
 
-    if (
-        !animationSequence.length
-    ) {
+    const animation =
+        recordedAnimations.find(
+            item =>
+                item.id ===
+                animationId
+        );
+
+    if (!animation) {
         return;
     }
 
-    const doc =
-        getFrameDocument();
-
     const element =
         resolveElementPath(
-            animationSequence[0]
-                .path
+            animation.path
         );
 
     if (!element) {
         return;
     }
 
-    const sequenceName =
-        "suhsSequence_" +
-        Date.now();
+    if (
+        animation.trigger ===
+        "load"
+    ) {
 
-    const keyframes =
-        animationSequence
-            .map(
-                (
-                    animation,
-                    index
-                ) => {
+        appendInlineAnimation(
+            element,
+            animation,
+            0
+        );
+    }
+}
 
-                    const start =
-                        animationSequence
-                            .slice(
-                                0,
-                                index
-                            )
-                            .reduce(
-                                (
-                                    total,
-                                    item
-                                ) =>
-                                    total +
-                                    item.duration,
-                                0
-                            );
 
-                    const end =
-                        start +
-                        animation.duration;
+function installSequence(
+    sequence
+) {
 
-                    const total =
-                        animationSequence
-                            .reduce(
-                                (
-                                    sum,
-                                    item
-                                ) =>
-                                    sum +
-                                    item.duration,
-                                0
-                            );
+    if (
+        !sequence ||
+        !sequence.steps.length
+    ) {
+        return;
+    }
 
-                    const startPercent =
-                        (
-                            start /
-                            total
-                        ) *
-                        100;
+    // Chain the steps with animation-delay: each step starts when the
+    // previous steps finish. This works across different elements too,
+    // unlike one combined @keyframes block, and every step animates
+    // its own properties (move, rotate, scale) correctly.
+    let delay =
+        0;
 
-                    const endPercent =
-                        (
-                            end /
-                            total
-                        ) *
-                        100;
+    sequence.steps.forEach(
+        stepId => {
 
-                    return `
-                        ${startPercent}% {
-                            transform:
-                                ${animation.from.transform || "none"};
-                            opacity:
-                                ${animation.from.opacity};
-                        }
+            const animation =
+                recordedAnimations.find(
+                    item =>
+                        item.id ===
+                        stepId
+                );
 
-                        ${endPercent}% {
-                            transform:
-                                ${animation.to.transform || "none"};
-                            opacity:
-                                ${animation.to.opacity};
-                        }
-                    `;
-                }
-            )
-            .join("\n");
+            if (!animation) {
+                return;
+            }
 
-    const total =
-        animationSequence
-            .reduce(
-                (
-                    sum,
-                    item
-                ) =>
-                    sum +
-                    item.duration,
-                0
+            const element =
+                resolveElementPath(
+                    animation.path
+                );
+
+            if (!element) {
+                return;
+            }
+
+            appendInlineAnimation(
+                element,
+                animation,
+                delay
             );
 
-    const style =
-        doc.createElement(
-            "style"
-        );
-
-    style.textContent =
-        `
-@keyframes ${sequenceName} {
-    ${keyframes}
-}
-
-[data-suhs-sequence="${sequenceName}"] {
-    animation:
-        ${sequenceName}
-        ${total}ms
-        linear
-        both;
-}
-`;
-
-    doc.head.appendChild(
-        style
+            delay +=
+                animation.duration;
+        }
     );
 
-    element.dataset
-        .suhsSequence =
-        sequenceName;
-
-    syncDocumentFromFrame();
+    writeAnimationData(
+        getFrameDocument()
+    );
 }
 
 
@@ -8387,10 +9909,7 @@ function renderAnimationTimeline() {
         "";
 
     recordedAnimations.forEach(
-        (
-            animation,
-            index
-        ) => {
+        animation => {
 
             const row =
                 document.createElement(
@@ -8420,28 +9939,36 @@ function renderAnimationTimeline() {
                         )}
                     </div>
 
-                    <button
-                        class="btn"
-                        style="margin-top:7px;"
-                    >
-                        Remove
-                    </button>
+                    <div style="display:flex;gap:7px;margin-top:7px;">
+                        <button
+                            class="btn"
+                            style="flex:1;"
+                        >
+                            + Sequence
+                        </button>
+                        <button
+                            class="btn"
+                            style="flex:1;"
+                        >
+                            Remove
+                        </button>
+                    </div>
                 `;
 
-            row.querySelector(
-                "button"
-            )
-                .onclick =
-                () => {
+            const buttons =
+                row.querySelectorAll(
+                    "button"
+                );
 
-                    recordedAnimations
-                        .splice(
-                            index,
-                            1
-                        );
+            buttons[0].onclick =
+                () => addAnimationToSequence(
+                    animation.id
+                );
 
-                    renderAnimationTimeline();
-                };
+            buttons[1].onclick =
+                () => removeAnimation(
+                    animation.id
+                );
 
             container.appendChild(
                 row
@@ -8449,11 +9976,193 @@ function renderAnimationTimeline() {
         }
     );
 
-    animationSequence.forEach(
+    renderSequenceEditor();
+}
+
+
+function removeAnimation(
+    animationId
+) {
+
+    recordedAnimations =
+        recordedAnimations.filter(
+            item =>
+                item.id !==
+                animationId
+        );
+
+    animationSequences.forEach(
+        sequence => {
+
+            sequence.steps =
+                sequence.steps.filter(
+                    stepId =>
+                        stepId !==
+                        animationId
+                );
+        }
+    );
+
+    const doc =
+        getFrameDocument();
+
+    removeGeneratedAnimationStyle(
+        doc,
+        animationId
+    );
+
+    if (doc) {
+
+        doc.querySelectorAll(
+            '[data-suhs-animations~="' +
+            animationId +
+            '"]'
+        ).forEach(
+            element => {
+
+                const ids =
+                    (element.dataset.suhsAnimations || "")
+                        .split(" ")
+                        .filter(
+                            id =>
+                                id &&
+                                id !==
+                                animationId
+                        );
+
+                if (ids.length) {
+
+                    element.dataset.suhsAnimations =
+                        ids.join(" ");
+
+                } else {
+
+                    delete element.dataset
+                        .suhsAnimations;
+                }
+
+                delete element.dataset
+                    .suhsAnimation;
+
+                removeInlineAnimation(
+                    element,
+                    animationId
+                );
+            }
+        );
+    }
+
+    writeAnimationData(
+        doc
+    );
+
+    syncDocumentFromFrame();
+
+    renderAnimationTimeline();
+}
+
+
+function renderSequenceEditor() {
+
+    const select =
+        $("animationSequenceSelect");
+
+    const editor =
+        $("sequenceEditor");
+
+    if (!select || !editor) {
+        return;
+    }
+
+    select.innerHTML =
+        "";
+
+    animationSequences.forEach(
+        sequence => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                sequence.id;
+
+            option.textContent =
+                sequence.name +
+                " (" +
+                sequence.steps.length +
+                ")";
+
+            select.appendChild(
+                option
+            );
+        }
+    );
+
+    if (!animationSequences.length) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            "";
+
+        option.textContent =
+            "No sequence yet";
+
+        select.appendChild(
+            option
+        );
+    }
+
+    if (activeSequenceId) {
+
+        select.value =
+            activeSequenceId;
+    }
+
+    editor.innerHTML =
+        "";
+
+    const sequence =
+        animationSequences.find(
+            item =>
+                item.id ===
+                activeSequenceId
+        ) ||
+        null;
+
+    if (!sequence) {
+
+        editor.innerHTML =
+            `<div class="panel-description">No sequence selected. Record an animation, then use “+ Add to Sequence”.</div>`;
+
+        return;
+    }
+
+    if (!sequence.steps.length) {
+
+        editor.innerHTML =
+            `<div class="panel-description">${escapeHTML(sequence.name)} is empty. Add animations to it from the list above.</div>`;
+
+        return;
+    }
+
+    sequence.steps.forEach(
         (
-            animation,
+            stepId,
             index
         ) => {
+
+            const animation =
+                recordedAnimations.find(
+                    item =>
+                        item.id ===
+                        stepId
+                );
 
             const row =
                 document.createElement(
@@ -8466,21 +10175,129 @@ function renderAnimationTimeline() {
             row.innerHTML =
                 `
                     <strong>
-                        Sequence ${index + 1}
+                        Step ${index + 1}
                     </strong>
 
                     <div class="animation-meta">
                         ${escapeHTML(
-                            animation.name
+                            animation
+                                ? animation.name
+                                : stepId
                         )}
+                    </div>
+
+                    <div style="display:flex;gap:7px;margin-top:7px;">
+                        <button
+                            class="btn"
+                            title="Move earlier"
+                        >
+                            ↑
+                        </button>
+                        <button
+                            class="btn"
+                            title="Move later"
+                        >
+                            ↓
+                        </button>
+                        <button
+                            class="btn"
+                            title="Remove from sequence"
+                        >
+                            ✕
+                        </button>
                     </div>
                 `;
 
-            container.appendChild(
+            const buttons =
+                row.querySelectorAll(
+                    "button"
+                );
+
+            buttons[0].onclick =
+                () => moveSequenceStep(
+                    sequence,
+                    index,
+                    -1
+                );
+
+            buttons[1].onclick =
+                () => moveSequenceStep(
+                    sequence,
+                    index,
+                    1
+                );
+
+            buttons[2].onclick =
+                () => {
+
+                    const removedId =
+                        sequence.steps[
+                            index
+                        ];
+
+                    sequence.steps.splice(
+                        index,
+                        1
+                    );
+
+                    reapplyStandaloneAnimation(
+                        removedId
+                    );
+
+                    installSequence(
+                        sequence
+                    );
+
+                    renderAnimationTimeline();
+
+                    syncDocumentFromFrame();
+                };
+
+            editor.appendChild(
                 row
             );
         }
     );
+}
+
+
+function moveSequenceStep(
+    sequence,
+    index,
+    direction
+) {
+
+    const target =
+        index +
+        direction;
+
+    if (
+        target < 0 ||
+        target >=
+        sequence.steps.length
+    ) {
+        return;
+    }
+
+    const steps =
+        sequence.steps;
+
+    const temp =
+        steps[index];
+
+    steps[index] =
+        steps[target];
+
+    steps[target] =
+        temp;
+
+    installSequence(
+        sequence
+    );
+
+    renderAnimationTimeline();
+
+    syncDocumentFromFrame();
 }
 
 
@@ -8607,6 +10424,18 @@ function switchEditorMode(
         editorMode
     ) {
         return;
+    }
+
+    // Remember the selection so it can be restored when coming back
+    // from HTML mode (the visual frame is rebuilt from scratch).
+    if (
+        mode === "html" &&
+        editorMode === "visual" &&
+        selectedElementPath
+    ) {
+
+        pendingSelectionPath =
+            selectedElementPath;
     }
 
     if (
@@ -8807,7 +10636,7 @@ async function saveCurrentPage() {
             "error"
         );
 
-        return;
+        return false;
     }
 
     const page =
@@ -8818,7 +10647,7 @@ async function saveCurrentPage() {
         );
 
     if (!page) {
-        return;
+        return false;
     }
 
     try {
@@ -8862,6 +10691,8 @@ async function saveCurrentPage() {
             "success"
         );
 
+        return true;
+
     } catch (errorObject) {
 
         showStatus(
@@ -8869,6 +10700,8 @@ async function saveCurrentPage() {
             "Save failed.",
             "error"
         );
+
+        return false;
     }
 }
 
@@ -8877,7 +10710,85 @@ async function publishCurrentPage() {
 
     saveCurrentToMemory();
 
-    await saveCurrentPage();
+    const saved =
+        await saveCurrentPage();
+
+    if (!saved) {
+        return;
+    }
+
+    if (!activeDomain) {
+
+        showStatus(
+            "No domain selected.",
+            "error"
+        );
+
+        return;
+    }
+
+    const page =
+        sitePages.find(
+            item =>
+                item.content_key ===
+                currentPage
+        );
+
+    if (!page) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/site/publish",
+                {
+                    method:
+                        "POST",
+
+                    body:
+                        JSON.stringify({
+                            fqdn:
+                                activeDomain.fqdn,
+
+                            content_key:
+                                page.content_key
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Publish failed."
+            );
+        }
+
+        page.has_published =
+            1;
+
+        renderPageSelect();
+
+        showStatus(
+            data.message ||
+            "Published.",
+            "success"
+        );
+
+    } catch (errorObject) {
+
+        showStatus(
+            errorObject.message ||
+            "Publish failed.",
+            "error"
+        );
+    }
 }
 
 
@@ -8926,73 +10837,169 @@ function previewCurrentPage() {
    PAGE MANAGEMENT
    ============================================================================ */
 
-function createPage() {
+let inlinePromptCallback =
+    null;
 
-    const name =
-        prompt(
-            "New page filename:",
-            "about.html"
+
+function showInlinePrompt(
+    title,
+    defaultValue,
+    callback
+) {
+
+    inlinePromptCallback =
+        callback;
+
+    $("inlinePromptTitle")
+        .textContent =
+        title;
+
+    $("inlinePromptInput")
+        .value =
+        defaultValue ||
+        "";
+
+    $("inlinePromptModal")
+        .style.display =
+        "flex";
+
+    $("inlinePromptInput")
+        .focus();
+
+    $("inlinePromptInput")
+        .select();
+}
+
+
+function closeInlinePrompt(
+    value
+) {
+
+    $("inlinePromptModal")
+        .style.display =
+        "none";
+
+    const callback =
+        inlinePromptCallback;
+
+    inlinePromptCallback =
+        null;
+
+    if (callback) {
+
+        callback(
+            value
         );
-
-    if (!name) {
-        return;
     }
+}
 
-    let key =
-        name.trim();
 
-    if (
-        !key.endsWith(
-            ".html"
-        )
-    ) {
+$("inlinePromptOkButton")
+    .onclick =
+    () => closeInlinePrompt(
+        $("inlinePromptInput")
+            .value
+    );
 
-        key +=
-            ".html";
-    }
 
-    if (
-        sitePages.some(
-            page =>
-                page.content_key ===
-                key
-        )
-    ) {
+$("inlinePromptCancelButton")
+    .onclick =
+    () => closeInlinePrompt(
+        null
+    );
 
-        showStatus(
-            "That page already exists.",
-            "error"
-        );
 
-        return;
-    }
+$("inlinePromptInput")
+    .addEventListener(
+        "keydown",
+        event => {
 
-    saveCurrentToMemory();
+            if (event.key === "Enter") {
 
-    sitePages.push(
-        {
-            content_key:
-                key,
+                closeInlinePrompt(
+                    $("inlinePromptInput")
+                        .value
+                );
+            }
 
-            content:
-                createStarterDocument(
-                    activeDomain
-                        ? activeDomain.fqdn
-                        : "SUHS"
-                )
+            if (event.key === "Escape") {
+
+                closeInlinePrompt(
+                    null
+                );
+            }
         }
     );
 
-    currentPage =
-        key;
 
-    renderPageSelect();
+function createPage() {
 
-    loadCurrentPage();
+    showInlinePrompt(
+        "New page filename:",
+        "about.html",
+        name => {
 
-    showStatus(
-        "Page created.",
-        "success"
+            if (!name) {
+                return;
+            }
+
+            let key =
+                name.trim();
+
+            if (
+                !key.endsWith(
+                    ".html"
+                )
+            ) {
+
+                key +=
+                    ".html";
+            }
+
+            if (
+                sitePages.some(
+                    page =>
+                        page.content_key ===
+                        key
+                )
+            ) {
+
+                showStatus(
+                    "That page already exists.",
+                    "error"
+                );
+
+                return;
+            }
+
+            saveCurrentToMemory();
+
+            sitePages.push(
+                {
+                    content_key:
+                        key,
+
+                    content:
+                        createStarterDocument(
+                            activeDomain
+                                ? activeDomain.fqdn
+                                : "SUHS"
+                        )
+                }
+            );
+
+            currentPage =
+                key;
+
+            renderPageSelect();
+
+            loadCurrentPage();
+
+            showStatus(
+                "Page created.",
+                "success"
+            );
+        }
     );
 }
 
@@ -9003,54 +11010,55 @@ function renamePage() {
         return;
     }
 
-    const newName =
-        prompt(
-            "New page filename:",
-            currentPage
-        );
+    showInlinePrompt(
+        "New page filename:",
+        currentPage,
+        newName => {
 
-    if (!newName) {
-        return;
-    }
+            if (!newName) {
+                return;
+            }
 
-    const old =
-        currentPage;
+            const old =
+                currentPage;
 
-    let key =
-        newName.trim();
+            let key =
+                newName.trim();
 
-    if (
-        !key.endsWith(
-            ".html"
-        )
-    ) {
+            if (
+                !key.endsWith(
+                    ".html"
+                )
+            ) {
 
-        key +=
-            ".html";
-    }
+                key +=
+                    ".html";
+            }
 
-    const page =
-        sitePages.find(
-            item =>
-                item.content_key ===
-                old
-        );
+            const page =
+                sitePages.find(
+                    item =>
+                        item.content_key ===
+                        old
+                );
 
-    if (!page) {
-        return;
-    }
+            if (!page) {
+                return;
+            }
 
-    page.content_key =
-        key;
+            page.content_key =
+                key;
 
-    currentPage =
-        key;
+            currentPage =
+                key;
 
-    renderPageSelect();
+            renderPageSelect();
 
-    showStatus(
-        "Page renamed.",
-        "success"
+            showStatus(
+                "Page renamed.",
+                "success"
+            );
+        }
     );
 }
 
@@ -9233,6 +11241,158 @@ $("saveProfileButton")
     .addEventListener(
         "click",
         saveProfile
+    );
+
+
+// Account deletion calls the Worker directly so that a wrong password
+// (401) is reported as such. A two-step arm avoids an accidental click.
+let deleteAccountArmed =
+    false;
+
+let deleteAccountArmTimer =
+    null;
+
+$("deleteAccountButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            const button =
+                $("deleteAccountButton");
+
+            const status =
+                $("deleteAccountStatus");
+
+            const password =
+                $("deleteAccountPassword")
+                    .value;
+
+            if (!password) {
+
+                status.textContent =
+                    "Enter your password to confirm deletion.";
+
+                return;
+            }
+
+            if (!deleteAccountArmed) {
+
+                deleteAccountArmed =
+                    true;
+
+                button.textContent =
+                    "Click again to confirm — this cannot be undone";
+
+                status.textContent =
+                    "This permanently deletes your profile, domains, pages and inbox.";
+
+                clearTimeout(
+                    deleteAccountArmTimer
+                );
+
+                deleteAccountArmTimer =
+                    setTimeout(
+                        () => {
+
+                            deleteAccountArmed =
+                                false;
+
+                            button.textContent =
+                                "Delete My Account";
+                        },
+                        10000
+                    );
+
+                return;
+            }
+
+            deleteAccountArmed =
+                false;
+
+            clearTimeout(
+                deleteAccountArmTimer
+            );
+
+            button.textContent =
+                "Delete My Account";
+
+            status.textContent =
+                "Deleting account...";
+
+            try {
+
+                const response =
+                    await apiFetch(
+                        "/api/account/delete",
+                        {
+                            method:
+                                "POST",
+
+                            body:
+                                JSON.stringify(
+                                    {
+                                        confirm:
+                                            true,
+
+                                        password:
+                                            password
+                                    }
+                                )
+                        }
+                    );
+
+                let data =
+                    {};
+
+                try {
+
+                    data =
+                        await response.json();
+
+                } catch {
+
+                    data =
+                        {};
+                }
+
+                if (!response.ok) {
+
+                    if (
+                        response.status ===
+                        404
+                    ) {
+
+                        throw new Error(
+                            "Account deletion is not available yet — the registry update that adds it has not been deployed."
+                        );
+                    }
+
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        "Account deletion failed."
+                    );
+                }
+
+                $("deleteAccountPassword")
+                    .value =
+                    "";
+
+                status.textContent =
+                    data.message ||
+                    "Account deleted.";
+
+                clearSession();
+
+                showLogin();
+
+            } catch (errorObject) {
+
+                status.textContent =
+                    errorObject.message ||
+                    "Account deletion failed.";
+            }
+        }
     );
 
 
@@ -10119,6 +12279,15 @@ $("siteFrame")
                 true
             );
 
+            if (doc.defaultView) {
+
+                doc.defaultView.addEventListener(
+                    "scroll",
+                    updateSelectionBox,
+                    true
+                );
+            }
+
             renderLayers();
 
             updateSelectionBox();
@@ -10129,6 +12298,54 @@ $("siteFrame")
 function frameMouseDown(
     event
 ) {
+
+    if (
+        activeTool ===
+        "pin"
+    ) {
+
+        const doc =
+            getFrameDocument();
+
+        if (
+            event.target &&
+            event.target.nodeType === 1 &&
+            event.target !==
+                doc.documentElement &&
+            event.target !==
+                doc.body
+        ) {
+
+            const path =
+                pathForElement(
+                    event.target
+                );
+
+            if (path) {
+
+                selectElementByPath(
+                    path
+                );
+            }
+        }
+
+        if (!selectedElement) {
+
+            showStatus(
+                "Select an object first.",
+                "error"
+            );
+
+            return;
+        }
+
+        setPinAtPoint(
+            event.clientX,
+            event.clientY
+        );
+
+        return;
+    }
 
     if (
         activeTool !==
@@ -10150,10 +12367,6 @@ function frameMouseDown(
 
     event.preventDefault();
 
-    const rect =
-        selectedElement
-            .getBoundingClientRect();
-
     dragState = {
 
         startX:
@@ -10163,10 +12376,16 @@ function frameMouseDown(
             event.clientY,
 
         startLeft:
-            rect.left,
+            parseFloat(
+                selectedElement.style.left
+            ) ||
+            0,
 
         startTop:
-            rect.top
+            parseFloat(
+                selectedElement.style.top
+            ) ||
+            0
     };
 }
 
@@ -10195,11 +12414,17 @@ function frameMouseMove(
         "relative";
 
     selectedElement.style.left =
-        dx +
+        (
+            dragState.startLeft +
+            dx
+        ) +
         "px";
 
     selectedElement.style.top =
-        dy +
+        (
+            dragState.startTop +
+            dy
+        ) +
         "px";
 
     updateSelectionBox();
@@ -10217,6 +12442,192 @@ function frameMouseUp() {
 
     syncDocumentFromFrame();
 }
+
+
+/* ============================================================================
+   SELECTION HANDLES (resize + rotate)
+   ============================================================================ */
+
+let handleDragState =
+    null;
+
+
+function elementCenterInParent() {
+
+    const rect =
+        selectedElement.getBoundingClientRect();
+
+    const iframeRect =
+        $("siteFrame")
+            .getBoundingClientRect();
+
+    return {
+        x:
+            iframeRect.left +
+            rect.left +
+            rect.width / 2,
+
+        y:
+            iframeRect.top +
+            rect.top +
+            rect.height / 2
+    };
+}
+
+
+$("resizeHandle")
+    .addEventListener(
+        "pointerdown",
+        event => {
+
+            if (!selectedElement) {
+                return;
+            }
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            $("resizeHandle")
+                .setPointerCapture(
+                    event.pointerId
+                );
+
+            const rect =
+                selectedElement.getBoundingClientRect();
+
+            handleDragState = {
+                kind: "resize",
+                startX: event.clientX,
+                startY: event.clientY,
+                startWidth: rect.width,
+                startHeight: rect.height
+            };
+        }
+    );
+
+
+$("rotateHandle")
+    .addEventListener(
+        "pointerdown",
+        event => {
+
+            if (!selectedElement) {
+                return;
+            }
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            $("rotateHandle")
+                .setPointerCapture(
+                    event.pointerId
+                );
+
+            const center =
+                elementCenterInParent();
+
+            const current =
+                readInlineTransform();
+
+            handleDragState = {
+                kind: "rotate",
+                centerX: center.x,
+                centerY: center.y,
+                startAngle:
+                    Math.atan2(
+                        event.clientY - center.y,
+                        event.clientX - center.x
+                    ) *
+                    180 / Math.PI,
+                startRotation:
+                    current.rotate
+            };
+        }
+    );
+
+
+window.addEventListener(
+    "pointermove",
+    event => {
+
+        if (!handleDragState || !selectedElement) {
+            return;
+        }
+
+        if (handleDragState.kind === "resize") {
+
+            const width =
+                Math.max(
+                    10,
+                    handleDragState.startWidth +
+                    (event.clientX - handleDragState.startX)
+                );
+
+            const height =
+                Math.max(
+                    10,
+                    handleDragState.startHeight +
+                    (event.clientY - handleDragState.startY)
+                );
+
+            selectedElement.style.width =
+                width +
+                "px";
+
+            selectedElement.style.height =
+                height +
+                "px";
+
+            updateSelectionBox();
+
+            return;
+        }
+
+        if (handleDragState.kind === "rotate") {
+
+            const angle =
+                Math.atan2(
+                    event.clientY - handleDragState.centerY,
+                    event.clientX - handleDragState.centerX
+                ) *
+                180 / Math.PI;
+
+            const rotation =
+                handleDragState.startRotation +
+                (angle - handleDragState.startAngle);
+
+            const current =
+                readInlineTransform();
+
+            applySelectedTransform(
+                Math.round(rotation * 10) / 10,
+                current.scale
+            );
+
+            updateSelectionBox();
+        }
+    }
+);
+
+
+window.addEventListener(
+    "pointerup",
+    () => {
+
+        if (!handleDragState) {
+            return;
+        }
+
+        handleDragState =
+            null;
+
+        syncDocumentFromFrame();
+
+        updateSelectionBox();
+    }
+);
 
 
 /* ============================================================================
